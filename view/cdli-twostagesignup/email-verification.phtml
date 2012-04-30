@@ -1,0 +1,10 @@
+<h1>Step 1: Email Verification</h1>
+<?php
+if(!\ZfcUser\Module::getOption('enable_registration'))
+{
+    print '<div class="alert alert-error">Registration is disabled</div>';
+    return;
+}
+?>
+
+<?php echo $this->form->setAction($this->url('zfcuser/register/step1'))->setView($this); ?>
