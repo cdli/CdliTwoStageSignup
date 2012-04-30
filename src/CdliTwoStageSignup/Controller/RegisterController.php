@@ -5,11 +5,14 @@ namespace CdliTwoStageSignup\Controller;
 use Zend\Mvc\Controller\ActionController,
     Zend\Stdlib\ResponseDescription as Response,
     Zend\View\Model\ViewModel,
-    CdliTwoStageSignup\Form\EmailVerification as EmailVerificationForm;
+    CdliTwoStageSignup\Form\EmailVerification as EvrForm,
+    CdliTwoStageSignup\Model\EmailVerification as EvrModel,
+    CdliTwoStageSignup\Service\EmailVerification as EvrService;
 
 class RegisterController extends ActionController
 {
 	protected $emailVerificationForm = NULL;
+	protected $emailVerificationService = NULL;
 
 	public function emailValidationAction()
 	{
@@ -20,9 +23,7 @@ class RegisterController extends ActionController
 			$data = $this->getRequest()->post()->toArray();
 			if ( $form->isValid($data) )
 			{
-				echo '<div class="well">';
-				print_r($data);
-				echo '</div>';
+                $model = $this->getEmailVerificationService()->createFromForm($form);
 			}
 		}
 
@@ -37,9 +38,20 @@ class RegisterController extends ActionController
 		return $this->emailVerificationForm;
 	}
 
-    public function setEmailVerificationForm(EmailVerificationForm $emailVerificationForm)
+    public function setEmailVerificationForm(EvrForm $emailVerificationForm)
 	{
 		$this->emailVerificationForm = $emailVerificationForm;
+		return $this;
+	}
+
+    public function getEmailVerificationService()
+	{
+		return $this->emailVerificationService;
+	}
+
+    public function setEmailVerificationService(EvrService $emailVerificationService)
+	{
+		$this->emailVerificationService = $emailVerificationService;
 		return $this;
 	}
 }
