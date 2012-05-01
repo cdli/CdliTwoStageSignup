@@ -29,6 +29,16 @@ class EmailVerification extends EventProvider
 		return $this->evrMapper->findByRequestKey($token);
 	}
 
+    public function findByEmail($email)
+	{
+		return $this->evrMapper->findByEmail($email);
+	}
+
+    public function cleanExpiredVerificationRequests()
+	{
+		return $this->evrMapper->cleanExpiredVerificationRequests();
+	}
+
     /**
      * createFromForm
      *

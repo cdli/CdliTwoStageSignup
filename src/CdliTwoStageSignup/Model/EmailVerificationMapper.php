@@ -42,6 +42,14 @@ class EmailVerificationMapper extends DbMapperAbstract
         return $evr;
     }
 
+    public function cleanExpiredVerificationRequests($expiryTime=86400)
+    {
+        $now = new \DateTime((int)$expiryTime . ' seconds ago');
+        $where = new \Zend\Db\Sql\Where();
+        $where->lessThanOrEqualTo($this->reqtimeField, $now->format('Y-m-d H:i:s'));
+        return $this->getTableGateway()->delete($where);
+    }
+
     protected function fromRow($row)
     {
         if (!$row) return false;
