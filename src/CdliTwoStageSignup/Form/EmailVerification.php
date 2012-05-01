@@ -9,6 +9,7 @@ use Zend\Form\Form,
 class EmailVerification extends ProvidesEventsForm
 {
     protected $emailValidator;
+    protected $recordExistsValidator;
 
     public function initLate()
     {
@@ -19,6 +20,7 @@ class EmailVerification extends ProvidesEventsForm
             'validators' => array(
                 'EmailAddress',
                 $this->emailValidator,
+                $this->recordExistsValidator,
             ),
             'required'   => true,
             'label'      => 'Email',
@@ -43,6 +45,12 @@ class EmailVerification extends ProvidesEventsForm
     public function setEmailValidator($emailValidator)
     {
         $this->emailValidator = $emailValidator;
+        return $this;
+    }
+
+    public function setRecordExistsValidator($recordExistsValidator)
+    {
+        $this->recordExistsValidator = $recordExistsValidator;
         $this->initLate();  //Yuck
         return $this;
     }

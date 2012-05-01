@@ -9,6 +9,7 @@ return array(
             'alias' => array(
             	'cdli-twostagesignup-controller' => 'CdliTwoStageSignup\Controller\RegisterController',
                 'cdli-twostagesignup_evr_tg' => 'Zend\Db\TableGateway\TableGateway',
+                'cdli-twostagesignup_evr_validator' => 'CdliTwoStageSignup\Validator\AssertNoValidationInProgress',
                 'cdli-twostagesignup_email_view' => 'Zend\View\Renderer\PhpRenderer',
             ),
 
@@ -46,10 +47,20 @@ return array(
 
             'CdliTwoStageSignup\Form\EmailVerification' => array(
                 'parameters' => array(
-                    'emailValidator'    => 'zfcuser_uemail_validator',
-                    'captcha_element'   => 'zfcuser_captcha_element'
+                    'emailValidator'         => 'zfcuser_uemail_validator',
+                    'recordExistsValidator'  => 'cdli-twostagesignup_evr_validator',
+                    'captcha_element'        => 'zfcuser_captcha_element'
                 ),
             ),
+            'cdli-twostagesignup_evr_validator' => array(
+                'parameters' => array(
+                    'mapper'  => 'CdliTwoStageSignup\Model\EmailVerificationMapper',
+                    'options' => array(
+                        'key' => 'email_address',
+                    ),
+                ),
+            ),
+
 
             /**
              * Service / Mapper / DB
