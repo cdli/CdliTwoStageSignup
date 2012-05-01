@@ -1,0 +1,4 @@
+
+You have received this email because you initiated an account registration request with us.  To continue with the registration process, please click the link below: 
+
+<?php echo $this->serverUrl($this->url('zfcuser/register/step2', array('token' => $this->record->getRequestKey()))); ?>

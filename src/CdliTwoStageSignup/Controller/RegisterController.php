@@ -23,7 +23,9 @@ class RegisterController extends ActionController
 			$data = $this->getRequest()->post()->toArray();
 			if ( $form->isValid($data) )
 			{
-                $model = $this->getEmailVerificationService()->createFromForm($form);
+                $service = $this->getEmailVerificationService();
+                $model = $service->createFromForm($form);
+				$service->sendVerificationEmailMessage($model);
 			}
 		}
 
@@ -31,6 +33,22 @@ class RegisterController extends ActionController
 		$vm = new ViewModel(array('form' => $form));
 		$vm->setTemplate('cdli-twostagesignup/email-verification');
 		return $vm;
+	}
+
+    public function checkTokenAction()
+	{
+		$token = $this->getEvent()->getRouteMatch()->getParam('token');
+        $validator = new \Zend\Validator\Hex();
+		if ( $validator->isValid($token) )
+		{
+			$model = $this->getEmailVerificationService()->findByRequestKey($token);
+			if ( $model instanceof EvrModel )
+			{
+				echo "<pre>";
+				die(print_r($model));
+			}
+		}
+		die('ERROR!');
 	}
 
     public function getEmailVerificationForm()

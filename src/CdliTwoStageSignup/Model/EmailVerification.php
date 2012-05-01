@@ -41,8 +41,11 @@ class EmailVerification extends ModelAbstract
 		return $this->emailAddress;
 	}
 
-	public function setRequestTime(\DateTime $time)
+	public function setRequestTime($time)
 	{
+        if ( ! $time instanceof \DateTime ) {
+			$time = new \DateTime($time);
+		}
 		$this->requestTime = $time;
 		return $this;
 	}

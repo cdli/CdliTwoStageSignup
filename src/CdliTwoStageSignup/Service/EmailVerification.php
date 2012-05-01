@@ -8,7 +8,11 @@ use Zend\Form\Form,
     CdliTwoStageSignup\Module as modCTSS,
     ZfcBase\EventManager\EventProvider,
 	CdliTwoStageSignup\Model\EmailVerification as Model,
-	CdliTwoStageSignup\Model\EmailVerificationMapper as ModelMapper;
+	CdliTwoStageSignup\Model\EmailVerificationMapper as ModelMapper,
+    Zend\Mail\Message as EmailMessage,
+    Zend\Mail\Transport as EmailTransport,
+    Zend\View\Model\ViewModel,
+    Zend\View\Renderer as ViewRenderer;
 
 class EmailVerification extends EventProvider
 {
@@ -16,6 +20,14 @@ class EmailVerification extends EventProvider
      * @var ModelMapper
      */
     protected $evrMapper;
+
+    protected $emailRenderer;
+    protected $emailTransport;
+
+    public function findByRequestKey($token)
+	{
+		return $this->evrMapper->findByRequestKey($token);
+	}
 
     /**
      * createFromForm
@@ -34,6 +46,20 @@ class EmailVerification extends EventProvider
         return $model;
     }
 
+    public function sendVerificationEmailMessage(Model $record)
+    {
+		$message = new EmailMessage();
+        $message->setFrom(modCTSS::getOption('email_from_address'));
+        $message->setTo($record->getEmailAddress());
+        $message->setSubject(modCTSS::getOption('verification_email_subject_line'));
+
+        $viewModel = new ViewModel(array('record' => $record));
+        $viewModel->setTerminal(true)->setTemplate('cdli-twostagesignup/email/verification');
+        $message->setBody($this->emailRenderer->render($viewModel));
+
+        $this->emailTransport->send($message);
+	}
+
     /**
      * setEmailVerificationMapper
      *
@@ -43,6 +69,18 @@ class EmailVerification extends EventProvider
     public function setEmailVerificationMapper(ModelMapper $evrMapper)
     {
         $this->evrMapper = $evrMapper;
+        return $this;
+    }
+
+    public function setMessageRenderer(ViewRenderer $emailRenderer)
+	{
+		$this->emailRenderer = $emailRenderer;
+		return $this;
+	}
+
+    public function setMessageTransport(EmailTransport $emailTransport)
+    {
+        $this->emailTransport = $emailTransport;
         return $this;
     }
 }
