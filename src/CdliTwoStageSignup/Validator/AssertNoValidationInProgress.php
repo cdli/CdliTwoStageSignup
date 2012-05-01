@@ -94,7 +94,7 @@ class AssertNoValidationInProgress extends AbstractValidator
         $this->setValue($value);
 
         $result = $this->getMapper()->findByEmail($value);
-        if ($result) {
+        if ($result && !$result->isExpired()) {
             $valid = false;
             $this->error(self::ERROR_RECORD_FOUND);
         }
