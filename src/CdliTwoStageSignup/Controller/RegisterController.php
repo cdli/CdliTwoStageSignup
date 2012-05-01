@@ -3,7 +3,7 @@
 namespace CdliTwoStageSignup\Controller;
 
 use Zend\Mvc\Controller\ActionController,
-    Zend\Stdlib\ResponseDescription as Response,
+    Zend\Http\Response,
     Zend\View\Model\ViewModel,
     CdliTwoStageSignup\Form\EmailVerification as EvrForm,
     CdliTwoStageSignup\Model\EmailVerification as EvrModel,
@@ -51,8 +51,54 @@ class RegisterController extends ActionController
 			$model = $this->getEmailVerificationService()->findByRequestKey($token);
 			if ( $model instanceof EvrModel )
 			{
-				echo "<pre>";
-				die(print_r($model));
+                $formAction = $this->url()->fromRoute('zfcuser/register/step2', array('token'=>$model->getRequestKey()));
+
+                // Listen for the form's init event
+                $events = \Zend\EventManager\StaticEventManager::getInstance();
+                $events->attach('ZfcUser\Form\Register','init', function($e) use ($model) {
+                    $form = $e->getTarget();
+                    // Replace the email address input field with a hidden field
+					$form->removeElement('email');
+                    $form->addElement('hidden', 'email', array(
+                        'value' => $model->getEmailAddress()
+					));
+				});
+
+                // Hook into existing form processing logic
+				$vm = $this->forward()->dispatch('zfcuser', array('action' => 'register'));
+                if ( $vm instanceof Response )
+				{
+                	$zfcUserAction = $this->url()->fromRoute('zfcuser/register');
+
+					// Defeat ZfcUser's attempt to redirect to zfcuser/register
+                    // Only intercept form validation failure@TODO make sure it doesn't defeat other redirects (like zfcuser/login)
+					$locationHeaders = $this->getResponse()->headers()->get('Location');
+					if ( count($locationHeaders) > 0 ) 
+					{
+                    	$shouldInterceptRedirect = false;
+						foreach ( $this->getResponse()->headers()->get('Location') as $header )
+							if ( $header == $zfcUserAction )
+								$shouldInterceptRedirect = true;
+						if ( !$shouldInterceptRedirect )
+							return $vm;
+					}
+
+					// If we get here, we must intercept, so reset the response
+					$response = $this->getResponse();
+					$response->setStatusCode(200);
+					$response->headers()->clearHeaders();
+
+					// ... and create a view model to render the form
+					$vm = new ViewModel(array(
+						'registerForm' => $this->getLocator()->get('ZfcUser\Form\Register')
+					));
+				}
+
+				// Defeat ZfcUser's attempt to render it's own view script
+                $vm->setVariable('formAction', $formAction);
+                $vm->setVariable('record', $model);
+				$vm->setTemplate('cdli-twostagesignup/register');
+				return $vm;
 			}
 		}
 		die('ERROR!');
