@@ -10,6 +10,8 @@ CdliTwoStageSignup is an extension to [ZfcUser](http://github.com/ZF-Commons/Zfc
 * Step 1: Email Address Verification
 * Step 2: Account Creation
 
+Email Address Verification is performed by sending an email with a registration token to the email address provided by the user in Step 1.  When the user receives the email and clicks on the registration link, they will be directed to the ZfcUser account registration form to complete the registration process.  This ensures that the email address provided by the user is valid and under their control.
+
 Installation
 ------------
 
