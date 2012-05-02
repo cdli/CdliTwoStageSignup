@@ -78,8 +78,7 @@ class RegisterController extends ActionController
 				{
                 	$zfcUserAction = $this->url()->fromRoute('zfcuser/register');
 
-					// Defeat ZfcUser's attempt to redirect to zfcuser/register
-                    // Only intercept form validation failure@TODO make sure it doesn't defeat other redirects (like zfcuser/login)
+                    // Intercept form validation failure redirects from ZfcUser
 					$locationHeaders = $this->getResponse()->headers()->get('Location');
 					if ( count($locationHeaders) > 0 ) 
 					{
