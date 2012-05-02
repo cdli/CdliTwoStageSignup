@@ -39,6 +39,11 @@ class EmailVerification extends EventProvider
 		return $this->evrMapper->cleanExpiredVerificationRequests();
 	}
 
+    public function delete(Model $m)
+	{
+		return $this->evrMapper->delete($m);
+	}
+
     /**
      * createFromForm
      *

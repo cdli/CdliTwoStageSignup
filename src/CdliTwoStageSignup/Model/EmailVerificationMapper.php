@@ -24,6 +24,11 @@ class EmailVerificationMapper extends DbMapperAbstract
         return $this->persist($evrModel, 'update');
     }
 
+	public function delete(EmailVerification $evrModel)
+	{
+		return $this->getTableGateway()->delete(array($this->keyField => $evrModel->getRequestKey()));
+	}
+
     public function findByEmail($email)
     {
         $rowset = $this->getTableGateway()->select(array($this->emailField => $email));
