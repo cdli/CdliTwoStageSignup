@@ -7,8 +7,8 @@ use Zend\Form\Form,
     DateTime,
     CdliTwoStageSignup\Module as modCTSS,
     ZfcBase\EventManager\EventProvider,
-	CdliTwoStageSignup\Model\EmailVerification as Model,
-	CdliTwoStageSignup\Model\EmailVerificationMapper as ModelMapper,
+    CdliTwoStageSignup\Model\EmailVerification as Model,
+    CdliTwoStageSignup\Model\EmailVerificationMapper as ModelMapper,
     Zend\Mail\Message as EmailMessage,
     Zend\Mail\Transport as EmailTransport,
     Zend\View\Model\ViewModel,
@@ -25,24 +25,24 @@ class EmailVerification extends EventProvider
     protected $emailTransport;
 
     public function findByRequestKey($token)
-	{
-		return $this->evrMapper->findByRequestKey($token);
-	}
+    {
+        return $this->evrMapper->findByRequestKey($token);
+    }
 
     public function findByEmail($email)
-	{
-		return $this->evrMapper->findByEmail($email);
-	}
+    {
+        return $this->evrMapper->findByEmail($email);
+    }
 
     public function cleanExpiredVerificationRequests()
-	{
-		return $this->evrMapper->cleanExpiredVerificationRequests();
-	}
+    {
+        return $this->evrMapper->cleanExpiredVerificationRequests();
+    }
 
     public function delete(Model $m)
-	{
-		return $this->evrMapper->delete($m);
-	}
+    {
+        return $this->evrMapper->delete($m);
+    }
 
     /**
      * createFromForm
@@ -63,7 +63,7 @@ class EmailVerification extends EventProvider
 
     public function sendVerificationEmailMessage(Model $record)
     {
-		$message = new EmailMessage();
+        $message = new EmailMessage();
         $message->setFrom(modCTSS::getOption('email_from_address'));
         $message->setTo($record->getEmailAddress());
         $message->setSubject(modCTSS::getOption('verification_email_subject_line'));
@@ -73,7 +73,7 @@ class EmailVerification extends EventProvider
         $message->setBody($this->emailRenderer->render($viewModel));
 
         $this->emailTransport->send($message);
-	}
+    }
 
     /**
      * setEmailVerificationMapper
@@ -88,10 +88,10 @@ class EmailVerification extends EventProvider
     }
 
     public function setMessageRenderer(ViewRenderer $emailRenderer)
-	{
-		$this->emailRenderer = $emailRenderer;
-		return $this;
-	}
+    {
+        $this->emailRenderer = $emailRenderer;
+        return $this;
+    }
 
     public function setMessageTransport(EmailTransport $emailTransport)
     {

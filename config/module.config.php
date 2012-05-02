@@ -7,7 +7,7 @@ return array(
     'di' => array(
         'instance' => array(
             'alias' => array(
-            	'cdli-twostagesignup-controller' => 'CdliTwoStageSignup\Controller\RegisterController',
+               'cdli-twostagesignup-controller' => 'CdliTwoStageSignup\Controller\RegisterController',
                 'cdli-twostagesignup_evr_tg' => 'Zend\Db\TableGateway\TableGateway',
                 'cdli-twostagesignup_evr_validator' => 'CdliTwoStageSignup\Validator\AssertNoValidationInProgress',
                 'cdli-twostagesignup_email_view' => 'Zend\View\Renderer\PhpRenderer',
@@ -39,7 +39,7 @@ return array(
                 'parameters' => array(
                     'resolver' => 'Zend\View\Resolver\AggregateResolver',
                 ),
-			),
+            ),
 
             /**
              * Forms Configuration
@@ -105,29 +105,29 @@ return array(
                                         ),
                                     ),
                                     'may_terminate' => true,
-		                            'child_routes' => array(
-           			                    'step1' => array(
-                       			            'type' => 'Literal',
-                                   			'options' => array(
-		                                        'route' => '/step1',
-           			                            'defaults' => array(
-                       			                    'controller' => 'cdli-twostagesignup-controller',
-                                   			        'action'     => 'email-validation',
-		                                        ),
-		                                    ),
-           		                        ),
-           			                    'step2' => array(
-                       			            'type' => 'Regex',
-                                   			'options' => array(
-		                                        'regex' => '/step2/token/(?<token>[A-F0-9]+)',
-           			                            'defaults' => array(
-                       			                    'controller' => 'cdli-twostagesignup-controller',
-                                   			        'action'     => 'check-token',
-		                                        ),
+                                    'child_routes' => array(
+                                        'step1' => array(
+                                            'type' => 'Literal',
+                                            'options' => array(
+                                                'route' => '/step1',
+                                                'defaults' => array(
+                                                    'controller' => 'cdli-twostagesignup-controller',
+                                                    'action'     => 'email-validation',
+                                                ),
+                                            ),
+                                         ),
+                                        'step2' => array(
+                                            'type' => 'Regex',
+                                            'options' => array(
+                                                'regex' => '/step2/token/(?<token>[A-F0-9]+)',
+                                                'defaults' => array(
+                                                    'controller' => 'cdli-twostagesignup-controller',
+                                                    'action'     => 'check-token',
+                                                ),
                                                 'spec' => '/step2/token/%token%',
-		                                    ),
-           		                        ),
-       		                        ),
+                                            ),
+                                         ),
+                                     ),
                                 ),
                             ),
                         ),
