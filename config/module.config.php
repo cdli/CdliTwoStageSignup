@@ -7,7 +7,7 @@ return array(
     'di' => array(
         'instance' => array(
             'alias' => array(
-               'cdli-twostagesignup-controller' => 'CdliTwoStageSignup\Controller\RegisterController',
+                'cdli-twostagesignup-controller' => 'CdliTwoStageSignup\Controller\RegisterController',
                 'cdli-twostagesignup_evr_tg' => 'Zend\Db\TableGateway\TableGateway',
                 'cdli-twostagesignup_evr_validator' => 'CdliTwoStageSignup\Validator\AssertNoValidationInProgress',
                 'cdli-twostagesignup_email_view' => 'Zend\View\Renderer\PhpRenderer',
@@ -72,7 +72,7 @@ return array(
             ),
             'cdli-twostagesignup_evr_tg' => array(
                 'parameters' => array(
-                    'tableName' => 'user_signup_email_verification',
+                    'table' => 'user_signup_email_verification',
                     'adapter'   => 'zfcuser_zend_db_adapter',
                 ),
             ),
@@ -90,7 +90,7 @@ return array(
              * Routes
              */
 
-            'Zend\Mvc\Router\RouteStack' => array(
+            'Zend\Mvc\Router\RouteStackInterface' => array(
                 'parameters' => array(
                     'routes' => array(
                         'zfcuser' => array(
