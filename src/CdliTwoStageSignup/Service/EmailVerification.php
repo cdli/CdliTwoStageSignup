@@ -9,7 +9,7 @@ use Zend\Form\Form,
     ZfcBase\EventManager\EventProvider,
     CdliTwoStageSignup\Model\EmailVerification as Model,
     CdliTwoStageSignup\Model\EmailVerificationMapper as ModelMapper,
-    Zend\Mail\Message\MessageInterface as EmailMessage,
+    Zend\Mail\Message as EmailMessage,
     Zend\Mail\Transport\TransportInterface as EmailTransport,
     Zend\View\Model\ViewModel,
     Zend\View\Renderer\RendererInterface as ViewRenderer;
