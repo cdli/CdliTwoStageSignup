@@ -63,4 +63,12 @@ class EmailVerification extends ModelAbstract
         $now = new \DateTime('now');
         return $now->diff($this->getRequestTime())->h > 24;
     }
+
+    /**
+     * @TODO
+     */
+    public function populate(array $rowData)
+    {
+        parent::populate($rowData);
+    }
 }
