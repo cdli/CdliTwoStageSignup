@@ -60,8 +60,8 @@ class EmailVerification extends ModelAbstract
 
     public function isExpired()
     {
-        $now = new \DateTime('now');
-        return $now->diff($this->getRequestTime())->h > 24;
+        $expiryDate = new \DateTime('24 hours ago');
+        return $this->getRequestTime() < $expiryDate;
     }
 
     /**
