@@ -21,7 +21,12 @@ class MapperTestCase extends TestCase
 
     protected function dbSchemaUp()
     {
-        $sqlfile = explode(';',file_get_contents(__DIR__ . '/../../../data/schema.sqlite.sql'));
+        $this->importSchema(__DIR__ . '/../../../data/schema.sqlite.sql');
+    }
+
+    protected function importSchema($file)
+    {
+        $sqlfile = explode(';',file_get_contents($file));
         foreach ( $sqlfile as $sqlStmt ) {
             $sqlStmt = trim($sqlStmt);
             if ( !empty($sqlStmt) ) {
