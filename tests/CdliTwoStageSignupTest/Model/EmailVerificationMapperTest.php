@@ -67,6 +67,13 @@ class EmailVerificationMapperTest extends MapperTestCase
         $this->assertEquals($this->model, $model);
     }
 
+    public function testFindByRequestKey()
+    {
+        $this->importSchema(__DIR__ . '/_files/singlerecord.sql');
+        $model = $this->mapper->findByRequestKey('DCE2D890895CF02');
+        $this->assertEquals($this->model, $model);
+    }
+
     protected function _queryFindByRequestKey($key)
     {
         $stmt = $this->db->query('SELECT * FROM '.$this->db->platform->quoteIdentifier('user_signup_email_verification').' WHERE request_key = ' . $this->db->driver->formatParameterName('id'));
