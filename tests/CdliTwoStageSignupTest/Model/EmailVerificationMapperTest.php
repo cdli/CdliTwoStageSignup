@@ -34,6 +34,22 @@ class EmailVerificationMapperTest extends MapperTestCase
         $this->assertEquals($this->model->getRequestTime()->format('Y-m-d H:i:s'), $result['request_time']);
     }
 
+    public function testUpdate()
+    {
+        $this->importSchema(__DIR__ . '/_files/singlerecord.sql');
+
+        $this->model->setEmailAddress('bar@baz.com');
+        $this->mapper->update($this->model);
+
+        // Find the inserted record and verify it was created properly
+        $result = $this->_queryFindByRequestKey($this->model->getRequestKey());
+        $this->assertInternalType('array', $result);
+        $this->assertEquals($this->model->getRequestKey(), $result['request_key']);
+        $this->assertEquals($this->model->getEmailAddress(), $result['email_address']);
+        $this->assertEquals($this->model->getRequestTime()->format('Y-m-d H:i:s'), $result['request_time']);
+    }
+
+
     public function testDelete()
     {
         $this->importSchema(__DIR__ . '/_files/singlerecord.sql');
