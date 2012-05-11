@@ -27,9 +27,7 @@ class EmailVerificationMapperTest extends MapperTestCase
         $this->mapper->add($this->model);
 
         // Find the inserted record and verify it was created properly
-        $stmt = $this->db->query('SELECT * FROM '.$this->db->platform->quoteIdentifier('user_signup_email_verification').' WHERE request_key = ' . $this->db->driver->formatParameterName('id'));
-        $results = $stmt->execute(array('id'=>$this->model->getRequestKey()));
-        $result = $results->current();
+        $result = $this->_queryFindByRequestKey($this->model->getRequestKey());
         $this->assertInternalType('array', $result);
         $this->assertEquals($this->model->getRequestKey(), $result['request_key']);
         $this->assertEquals($this->model->getEmailAddress(), $result['email_address']);
@@ -41,6 +39,13 @@ class EmailVerificationMapperTest extends MapperTestCase
         $this->importSchema(__DIR__ . '/_files/singlerecord.sql');
         $model = $this->mapper->findByEmail('foo@bar.com');
         $this->assertEquals($this->model, $model);
+    }
+
+    protected function _queryFindByRequestKey($key)
+    {
+        $stmt = $this->db->query('SELECT * FROM '.$this->db->platform->quoteIdentifier('user_signup_email_verification').' WHERE request_key = ' . $this->db->driver->formatParameterName('id'));
+        $results = $stmt->execute(array('id'=>$key));
+        return $results->current();
     }
 
 }
