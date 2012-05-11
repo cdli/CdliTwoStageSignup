@@ -1,4 +1,4 @@
-CREATE TABLE user_signup_email_verification
+CREATE TABLE IF NOT EXISTS user_signup_email_verification
 (
     request_key VARCHAR(32) NOT NULL,
     email_address VARCHAR(255) NOT NULL,

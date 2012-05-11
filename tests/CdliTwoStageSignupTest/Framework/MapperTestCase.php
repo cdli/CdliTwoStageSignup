@@ -16,7 +16,8 @@ class MapperTestCase extends TestCase
 
     protected function dbSchemaDown()
     {
-        $this->db->query('DROP TABLE IF EXISTS user_signup_email_verification;')->execute();
+#        $this->db->query('DROP TABLE IF EXISTS user_signup_email_verification;')->execute();
+        $this->db->query('DELETE FROM user_signup_email_verification;')->execute();
     }
 
     protected function dbSchemaUp()
