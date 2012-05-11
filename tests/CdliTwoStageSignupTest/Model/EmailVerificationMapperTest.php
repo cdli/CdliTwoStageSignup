@@ -34,4 +34,11 @@ class EmailVerificationMapperTest extends MapperTestCase
         $this->assertEquals($this->model->getRequestTime()->format('Y-m-d H:i:s'), $result['request_time']);
     }
 
+    public function testFindByEmail()
+    {
+        $this->importSchema(__DIR__ . '/_files/singlerecord.sql');
+        $model = $this->mapper->findByEmail('foo@bar.com');
+        $this->assertEquals($this->model, $model);
+    }
+
 }
