@@ -74,6 +74,27 @@ class EmailVerificationMapperTest extends MapperTestCase
         $this->assertEquals($this->model, $model);
     }
 
+    public function testCleanExpiredVerificationRequests()
+    {
+        $this->importSchema(__DIR__ . '/_files/singlerecord.sql');
+
+        // Add a second, non-expired request
+        $m = new Model();
+        $m->setEmailAddress('bar@baz.com');
+        $m->generateRequestKey();
+        $this->mapper->add($m);
+
+        $this->mapper->cleanExpiredVerificationRequests();
+
+        $set = $this->db->query('SELECT * FROM '.$this->db->platform->quoteIdentifier('user_signup_email_verification'))->execute();
+        # @TODO Count with PDO Sqlite appears to be broken (always zero)
+        #$this->assertEquals(1, $set->count());
+        $actualModel = $set->current();
+        $this->assertEquals($m->getRequestKey(), $actualModel['request_key']);
+        $this->assertEquals($m->getEmailAddress(), $actualModel['email_address']);
+        $this->assertEquals($m->getRequestTime()->format('Y-m-d H:i:s'), $actualModel['request_time']);
+    }
+
     protected function _queryFindByRequestKey($key)
     {
         $stmt = $this->db->query('SELECT * FROM '.$this->db->platform->quoteIdentifier('user_signup_email_verification').' WHERE request_key = ' . $this->db->driver->formatParameterName('id'));
