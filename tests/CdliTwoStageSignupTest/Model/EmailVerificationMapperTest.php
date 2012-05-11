@@ -13,9 +13,11 @@ class EmailVerificationMapperTest extends MapperTestCase
     {
         parent::setUp();
 
+        date_default_timezone_set('GMT');
+
         $this->model = new Model();
         $this->model->setEmailAddress('foo@bar.com');
-        $this->model->setRequestTime(new \DateTime('2001-01-01T01:01:01+0100'));
+        $this->model->setRequestTime(new \DateTime('2001-01-01T01:01:01'));
         $this->model->generateRequestKey();
         $this->mapper = $this->getLocator()->get('CdliTwoStageSignup\Model\EmailVerificationMapper');
     }
