@@ -17,12 +17,12 @@ class EmailVerificationMapperTest extends MapperTestCase
         $this->model->setEmailAddress('foo@bar.com');
         $this->model->setRequestTime(new \DateTime('2001-01-01T01:01:01+0100'));
         $this->model->generateRequestKey();
+        $this->mapper = $this->getLocator()->get('CdliTwoStageSignup\Model\EmailVerificationMapper');
     }
 
     public function testAdd()
     {
-        $mapper = $this->getLocator()->get('CdliTwoStageSignup\Model\EmailVerificationMapper');
-        $mapper->add($this->model);
+        $this->mapper->add($this->model);
 
         // Find the inserted record and verify it was created properly
         $stmt = $this->db->query('SELECT * FROM '.$this->db->platform->quoteIdentifier('user_signup_email_verification').' WHERE request_key = ' . $this->db->driver->formatParameterName('id'));
