@@ -10,7 +10,6 @@ class AssertNoValidationInProgress extends AbstractValidator
     /**
      * Error constants
      */
-    const ERROR_NO_RECORD_FOUND = 'noRecordFound';
     const ERROR_RECORD_FOUND    = 'recordFound';
 
     /**
@@ -24,26 +23,6 @@ class AssertNoValidationInProgress extends AbstractValidator
      * @var EmailVerificationMapper
      */
     protected $mapper;
-
-    /**
-     * @var string
-     */
-    protected $key;
-
-    /**
-     * Required options are:
-     *  - key     Field to use, 'emial' or 'username'
-     */
-    public function __construct(array $options)
-    {
-        if (!array_key_exists('key', $options)) {
-            throw new Exception\InvalidArgumentException('No key provided');
-        }
-        
-        $this->setKey($options['key']);
-        
-        parent::__construct($options);
-    }
 
     /**
      * getMapper 
@@ -64,27 +43,6 @@ class AssertNoValidationInProgress extends AbstractValidator
     public function setMapper(EmailVerificationMapper $mapper)
     {
         $this->mapper = $mapper;
-        return $this;
-    }
-
-    /**
-     * Get key.
-     *
-     * @return string
-     */
-    public function getKey()
-    {
-        return $this->key;
-    }
- 
-    /**
-     * Set key.
-     *
-     * @param string $key
-     */
-    public function setKey($key)
-    {
-        $this->key = $key;
         return $this;
     }
 
