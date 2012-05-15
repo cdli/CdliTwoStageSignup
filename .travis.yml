@@ -13,6 +13,7 @@ before_script:
   - git clone --recursive git://github.com/cdli/CdliTwoStageSignup.git vendor/CdliTwoStageSignup
   - rm config/application.config.php && cp ../CdliTwoStageSignup/.travis/application.config.php config/
   - rm ../CdliTwoStageSignup/tests/config/database.local.config.php && cp ../CdliTwoStageSignup/.travis/database.local.config.php ../CdliTwoStageSignup/tests/config/database.local.config.php
+  - cp vendor/CdliTwoStageSignup/tests/phpunit.xml.dist vendor/CdliTwoStageSignup/tests/phpunit.xml
 
 script:
   - cd vendor/CdliTwoStageSignup/tests
