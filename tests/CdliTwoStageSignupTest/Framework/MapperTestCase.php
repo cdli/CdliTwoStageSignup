@@ -3,6 +3,7 @@
 namespace CdliTwoStageSignupTest\Framework;
 
 use Zend\Db\Adapter\Adapter;
+use CdliTwoStageSignup\Module as modCTSS;
 
 class MapperTestCase extends TestCase
 {
@@ -16,13 +17,12 @@ class MapperTestCase extends TestCase
 
     protected function dbSchemaDown()
     {
-#        $this->db->query('DROP TABLE IF EXISTS user_signup_email_verification;')->execute();
-        $this->db->query('DELETE FROM user_signup_email_verification;')->execute();
+        $this->importSchema(__DIR__ . '/../../../data/' . modCTSS::getOption('test_database_schema_down'));
     }
 
     protected function dbSchemaUp()
     {
-        $this->importSchema(__DIR__ . '/../../../data/schema.sqlite.sql');
+        $this->importSchema(__DIR__ . '/../../../data/' . modCTSS::getOption('test_database_schema_up'));
     }
 
     protected function importSchema($file)

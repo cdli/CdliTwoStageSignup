@@ -10,10 +10,15 @@ before_script:
   - cd ZendSkeletonApplication
   - git clone --recursive git://github.com/ZF-Commons/ZfcUser.git vendor/ZfcUser
   - git clone --recursive git://github.com/ZF-Commons/ZfcBase.git vendor/ZfcBase
-  - git clone --recursive git://github.com/cdli/CdliTwoStageSignup.git vendor/CdliTwoStageSignup
-  - rm config/application.config.php && cp ../CdliTwoStageSignup/.travis/application.config.php config/
-  - rm ../CdliTwoStageSignup/tests/config/database.local.config.php && cp ../CdliTwoStageSignup/.travis/database.local.config.php ../CdliTwoStageSignup/tests/config/database.local.config.php
+  - cd vendor && mv ~/builds/cdli/CdliTwoStageSignup . && cd - >/dev/null
+  - cp vendor/CdliTwoStageSignup/.travis/application.config.php config/
+  - cp vendor/CdliTwoStageSignup/.travis/database.local.config.php config/autoload/
+  - cp vendor/CdliTwoStageSignup/.travis/module.zfcuser.config.php config/autoload/
+  - cp vendor/CdliTwoStageSignup/.travis/module.cdlitwostagesignup.config.php config/autoload/
   - cp vendor/CdliTwoStageSignup/tests/phpunit.xml.dist vendor/CdliTwoStageSignup/tests/phpunit.xml
+  - mysql -e 'create database travis_test'
+  - mysql -u root travis_test < vendor/CdliTwoStageSignup/data/schema_up.mysql.sql
+  - mysql -e 'show tables  FROM travis_test'
 
 script:
   - cd vendor/CdliTwoStageSignup/tests

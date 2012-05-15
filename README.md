@@ -22,7 +22,7 @@ Installation
    `application.config.php` file.
 2. Clone this project into your `./vendor/` directory and enable it in your
    `application.config.php` file.
-3. Import the SQL schema located in `./vendor/CdliTwoStageSignup/data/schema.sql`.
+3. Import the SQL schema located in `./vendor/CdliTwoStageSignup/data/schema_up.mysql.sql`.
 4. Copy `./vendor/CdliTwoStageSignup/config/module.cdlitwostagesignup.config.php.dist` to
    `./config/autoload/module.cdlitwostagesignup.config.php`.
 5. Fill in the required configuration variable values in  `./config/autoload/module.cdlitwostagesignup.config.php` 
