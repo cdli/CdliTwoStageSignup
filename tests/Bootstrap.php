@@ -38,6 +38,7 @@ $defaultListeners = new Zend\Module\Listener\DefaultListenerAggregate(
 
 $configListener = $defaultListeners->getConfigListener();
 $configListener->addConfigGlobPath("config/autoload/*.php");
+$configListener->addConfigGlobPath(__DIR__ . "/config/*.php");
 
 $moduleManager = new \Zend\Module\Manager(array(
     'ZfcBase',
@@ -48,14 +49,6 @@ $moduleManager->events()->attachAggregate($defaultListeners);
 $moduleManager->loadModules();
 
 $config = $configListener->getMergedConfig()->toArray();
-
-// Set up SQLite :memory: database for mapper testing
-$config['di']['instance']['Zend\Db\Adapter\Adapter']['parameters'] = array(
-    'driver' => array(
-        'driver' => 'pdo',
-        'dsn' => 'sqlite:/tmp/cdlitwostagesignup.test.db'
-    )
-);
 
 $di = new \Zend\Di\Di();
 $di->instanceManager()->addTypePreference('Zend\Di\Locator', $di);
