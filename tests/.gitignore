@@ -1,0 +1,4 @@
+TestConfiguration.php
+log/coverage
+config/*
+phpunit.xml
