@@ -1,0 +1,19 @@
+language: php
+
+php:
+  - 5.3
+  - 5.4
+
+before_script:
+  - cd ..
+  - git clone git://github.com/zendframework/ZendSkeletonApplication.git --recursive
+  - cd ZendSkeletonApplication
+  - git clone --recursive git://github.com/ZF-Commons/ZfcUser.git vendor/ZfcUser
+  - git clone --recursive git://github.com/ZF-Commons/ZfcBase.git vendor/ZfcBase
+  - git clone --recursive git://github.com/cdli/CdliTwoStageSignup.git vendor/CdliTwoStageSignup
+  - rm config/application.config.php && cp ../CdliTwoStageSignup/.travis/application.config.php config/
+  - rm ../CdliTwoStageSignup/tests/config/database.local.config.php && cp ../CdliTwoStageSignup/.travis/database.local.config.php ../CdliTwoStageSignup/tests/config/database.local.config.php
+
+script:
+  - cd vendor/CdliTwoStageSignup/tests
+  - phpunit
