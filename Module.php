@@ -2,15 +2,20 @@
 
 namespace CdliTwoStageSignup;
 
-use Zend\Module\Manager,
+use Zend\ModuleManager\ModuleManager,
     Zend\EventManager\StaticEventManager,
-    Zend\Module\Consumer\AutoloaderProvider;
+    Zend\ModuleManager\Feature\AutoloaderProviderInterface,
+    Zend\ModuleManager\Feature\ConfigProviderInterface,
+    Zend\ModuleManager\Feature\ServiceProviderInterface;
 
-class Module implements AutoloaderProvider
+class Module implements 
+    AutoloaderProviderInterface,
+    ConfigProviderInterface#,
+#    ServiceProviderInterface
 {
     protected static $options;
 
-    public function init(Manager $moduleManager)
+    public function init(ModuleManager $moduleManager)
     {
         $moduleManager->events()->attach('loadModules.post', array($this, 'modulesLoaded'));
     }
