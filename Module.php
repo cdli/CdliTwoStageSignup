@@ -49,9 +49,6 @@ class Module implements
                 },
                 'cdlitwostagesignup_ev_form' => function($sm) {
                     $form = new Form\EmailVerification();
-                    $form->setEmailValidator($sm->get('zfcuser_uemail_validator'));
-                    $form->setRecordExistsValidator($sm->get('cdlitwostagesignup_ev_validator'));
-                    $form->setCaptchaElement($sm->get('zfcuser_captcha_element'));
                     return $form;
                 },
                 'cdlitwostagesignup_ev_validator' => function($sm) {
