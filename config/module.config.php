@@ -13,9 +13,6 @@ return array(
     ),
 
     'controller' => array(
-        'factories' => array(
-            'cdli-twostagesignup-controller' => 'CdliTwoStageSignup\Service\RegisterControllerFactory'
-        ),
         'map' => array(),
     ),
 
@@ -28,7 +25,7 @@ return array(
                         'options' => array(
                             'route' => '/register',
                             'defaults' => array(
-                                'controller' => 'cdli-twostagesignup-controller',
+                                'controller' => 'cdlitwostagesignup_ev_controller',
                                 'action'     => 'email-validation',
                             ),
                         ),
@@ -39,7 +36,7 @@ return array(
                                 'options' => array(
                                     'route' => '/step1',
                                     'defaults' => array(
-                                        'controller' => 'cdli-twostagesignup-controller',
+                                        'controller' => 'cdlitwostagesignup_ev_controller',
                                         'action'     => 'email-validation',
                                     ),
                                 ),
@@ -49,7 +46,7 @@ return array(
                                 'options' => array(
                                     'regex' => '/step2/token/(?<token>[A-F0-9]+)',
                                     'defaults' => array(
-                                        'controller' => 'cdli-twostagesignup-controller',
+                                        'controller' => 'cdlitwostagesignup_ev_controller',
                                         'action'     => 'check-token',
                                     ),
                                     'spec' => '/step2/token/%token%',
