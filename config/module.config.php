@@ -13,6 +13,9 @@ return array(
     ),
 
     'controller' => array(
+        'factories' => array(
+            'cdlitwostagesignup_ev_controller' => 'CdliTwoStageSignup\Service\RegisterControllerFactory',
+        ),
         'map' => array(),
     ),
 

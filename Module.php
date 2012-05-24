@@ -38,15 +38,6 @@ class Module implements
     {
         return array(
             'factories' => array(
-                'cdlitwostagesignup_ev_controller' => function($sm) {
-                    $evrForm    = $sm->get('cdlitwostagesignup_ev_form');
-                    $evrService = $sm->get('cdlitwostagesignup_ev_service');
-
-                    $controller = new Controller\RegisterController();
-                    $controller->setEmailVerificationForm($evrForm);
-                    $controller->setEmailVerificationService($evrService);
-                    return $controller;
-                },
                 'cdlitwostagesignup_ev_form' => function($sm) {
                     $form = new Form\EmailVerification();
                     return $form;
