@@ -24,7 +24,7 @@ class EmailVerification extends ProvidesEventsForm
         $this->add(array(
             'name' => 'submit',
             'attributes' => array(
-                'label' => 'Verify Email Address',
+                'value' => 'Verify Email Address',
                 'type' => 'submit',
             ),
         ));
