@@ -6,12 +6,14 @@ use Zend\Mvc\Controller\ActionController,
     Zend\Http\Response,
     Zend\View\Model\ViewModel,
     CdliTwoStageSignup\Form\EmailVerification as EvrForm,
+    CdliTwoStageSignup\Form\EmailVerificationFilter as EvrFilter,
     CdliTwoStageSignup\Model\EmailVerification as EvrModel,
     CdliTwoStageSignup\Service\EmailVerification as EvrService;
 
 class RegisterController extends ActionController
 {
     protected $emailVerificationForm = NULL;
+    protected $emailVerificationFilter = NULL;
     protected $emailVerificationService = NULL;
 
     public function emailValidationAction()
@@ -19,6 +21,7 @@ class RegisterController extends ActionController
         $this->getEmailVerificationService()->cleanExpiredVerificationRequests();
 
         $form = $this->getEmailVerificationForm();
+        $form->setInputFilter($this->getEmailVerificationFilter());
         if ( $this->getRequest()->isPost() )
         {
             $data = $this->getRequest()->post()->toArray();
@@ -123,6 +126,21 @@ class RegisterController extends ActionController
     public function setEmailVerificationForm(EvrForm $emailVerificationForm)
     {
         $this->emailVerificationForm = $emailVerificationForm;
+        return $this;
+    }
+
+    public function getEmailVerificationFilter()
+    {
+        if ($this->emailVerificationFilter === null)
+        {
+            $this->emailVerificationFilter = $this->getServiceLocator()->get('cdlitwostagesignup_ev_filter');
+        }
+        return $this->emailVerificationFilter;
+    }
+
+    public function setEmailVerificationFilter(EvrFilter $emailVerificationFilter)
+    {
+        $this->emailVerificationFilter = $emailVerificationFilter;
         return $this;
     }
 

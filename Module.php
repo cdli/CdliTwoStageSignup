@@ -65,6 +65,11 @@ class Module implements
                     $obj->setMessageRenderer($sm->get('Zend\View\Renderer\PhpRenderer'));
                     $obj->setMessageTransport($sm->get('Zend\Mail\Transport\Sendmail'));
                     return $obj;
+                },
+                'cdlitwostagesignup_ev_filter' => function($sm) {
+                    return new Form\EmailVerificationFilter(
+                        $sm->get('cdlitwostagesignup_ev_validator')
+                    );
                 }
             ),
         );
