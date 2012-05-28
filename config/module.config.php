@@ -13,8 +13,8 @@ return array(
     ),
 
     'controller' => array(
-        'factories' => array(
-            'cdlitwostagesignup_ev_controller' => 'CdliTwoStageSignup\Service\RegisterControllerFactory',
+        'classes' => array(
+            'cdlitwostagesignup_ev_controller' => 'CdliTwoStageSignup\Controller\RegisterController',
         ),
         'map' => array(),
     ),

@@ -16,7 +16,7 @@ class RegisterController extends ActionController
 
     public function emailValidationAction()
     {
-        $this->emailVerificationService->cleanExpiredVerificationRequests();
+        $this->getEmailVerificationService()->cleanExpiredVerificationRequests();
 
         $form = $this->getEmailVerificationForm();
         if ( $this->getRequest()->isPost() )
@@ -113,6 +113,10 @@ class RegisterController extends ActionController
 
     public function getEmailVerificationForm()
     {
+        if ($this->emailVerificationForm === null)
+        {
+            $this->emailVerificationForm = $this->getServiceLocator()->get('cdlitwostagesignup_ev_form');
+        }
         return $this->emailVerificationForm;
     }
 
@@ -124,6 +128,10 @@ class RegisterController extends ActionController
 
     public function getEmailVerificationService()
     {
+        if ($this->emailVerificationService === null)
+        {
+            $this->emailVerificationService = $this->getServiceLocator()->get('cdlitwostagesignup_ev_service');
+        }
         return $this->emailVerificationService;
     }
 

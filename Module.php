@@ -37,11 +37,10 @@ class Module implements
     public function getServiceConfiguration()
     {
         return array(
+            'invokables' => array(
+                'cdlitwostagesignup_ev_form' => 'CdliTwoStageSignup\Form\EmailVerification',
+            ),
             'factories' => array(
-                'cdlitwostagesignup_ev_form' => function($sm) {
-                    $form = new Form\EmailVerification();
-                    return $form;
-                },
                 'cdlitwostagesignup_ev_validator' => function($sm) {
                     $obj = new Validator\AssertNoValidationInProgress();
                     $obj->setMapper($sm->get('cdlitwostagesignup_ev_modelmapper'));
