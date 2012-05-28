@@ -29,7 +29,7 @@ return array(
                             'route' => '/register',
                             'defaults' => array(
                                 'controller' => 'cdlitwostagesignup_ev_controller',
-                                'action'     => 'email-validation',
+                                'action'     => 'email-verification',
                             ),
                         ),
                         'may_terminate' => true,
@@ -40,7 +40,7 @@ return array(
                                     'route' => '/step1',
                                     'defaults' => array(
                                         'controller' => 'cdlitwostagesignup_ev_controller',
-                                        'action'     => 'email-validation',
+                                        'action'     => 'email-verification',
                                     ),
                                 ),
                              ),

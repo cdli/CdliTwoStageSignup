@@ -16,7 +16,7 @@ class RegisterController extends ActionController
     protected $emailVerificationFilter = NULL;
     protected $emailVerificationService = NULL;
 
-    public function emailValidationAction()
+    public function emailVerificationAction()
     {
         $this->getEmailVerificationService()->cleanExpiredVerificationRequests();
 
