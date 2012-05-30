@@ -14,4 +14,5 @@ return array(
     'CdliTwoStageSignup\Model\EmailVerificationMapper'                  => __DIR__ . '/src/CdliTwoStageSignup/Model/EmailVerificationMapper.php',
     'CdliTwoStageSignup\Validator\AssertNoValidationInProgress'         => __DIR__ . '/src/CdliTwoStageSignup/Validator/AssertNoValidationInProgress.php',
     'CdliTwoStageSignup\Form\EmailVerification'                         => __DIR__ . '/src/CdliTwoStageSignup/Form/EmailVerification.php',
+    'CdliTwoStageSignup\Form\EmailVerificationFilter'                   => __DIR__ . '/src/CdliTwoStageSignup/Form/EmailVerificationFilter.php',
 );

@@ -3,27 +3,27 @@
 namespace CdliTwoStageSignupTest\Framework;
 
 use PHPUnit_Framework_TestCase;
-use Zend\Di\DependencyInjectionInterface as Locator;
+use Zend\ServiceManager\ServiceLocatorInterface;
 
 class TestCase extends PHPUnit_Framework_TestCase
 {
     /**
-     * @var Locator
+     * @var ServiceLocatorInterface
      */
     protected static $locator;
 
     /**
-     * @param Locator $locator
+     * @param ServiceLocatorInterface $locator
      */
-    public static function setLocator(Locator $locator)
+    public static function setServiceLocator(ServiceLocatorInterface $locator)
     {
         self::$locator = $locator;
     }
 
     /**
-     * @return Locator
+     * @return ServiceLocatorInterface
      */
-    public function getLocator()
+    public function getServiceLocator()
     {
     	return self::$locator;
     }

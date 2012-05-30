@@ -1,5 +1,9 @@
 <?php
 
+use Zend\ServiceManager\ServiceManager;
+use Zend\Mvc\Service\ServiceManagerConfiguration;
+use CdliTwoStageSignupTest\Framework\TestCase;
+
 chdir(__DIR__);
 
 $previousDir = '.';
@@ -8,52 +12,27 @@ while (!file_exists('config/application.config.php')) {
     if($previousDir === $dir) {
         throw new RuntimeException(
             'Unable to locate "config/application.config.php":'
-            . ' is DoctrineORMModule in a subdir of your application skeleton?'
+            . ' is CdliTwoStageSignup in a subdir of your application skeleton?'
         );
     }
     $previousDir = $dir;
     chdir($dir);
 }
 
-if (is_readable(__DIR__ . '/TestConfiguration.php')) {
-    require_once __DIR__ . '/TestConfiguration.php';
-} else {
-    require_once __DIR__ . '/TestConfiguration.php.dist';
+if (!include('vendor/autoload.php')) {
+    throw new RuntimeException(
+        'vendor/autoload.php could not be found. '
+        . 'Did you run php composer.phar install in your application skeleton?'
+    );
 }
 
-set_include_path(__DIR__ . PATH_SEPARATOR . get_include_path());
-require_once (getenv('ZF2_PATH') ?: 'vendor/ZendFramework/library') . '/Zend/Loader/AutoloaderFactory.php';
-\Zend\Loader\AutoloaderFactory::factory();
+// Get application stack configuration
+$configuration = include 'config/application.config.php';
+$configuration['module_listener_options']['config_glob_paths'][] = __DIR__ . '/config/{,*.}{global,local}.php';
 
-$defaultListeners = new Zend\Module\Listener\DefaultListenerAggregate(
-    new Zend\Module\Listener\ListenerOptions(
-        array(
-            'module_paths' => array(
-                './module',
-                './vendor',
-            ),
-        )
-    )
-);
+// Setup service manager
+$serviceManager = new ServiceManager(new ServiceManagerConfiguration($configuration['service_manager']));
+$serviceManager->setService('ApplicationConfiguration', $configuration);
+$config = $serviceManager->get('Configuration');
 
-$configListener = $defaultListeners->getConfigListener();
-$configListener->addConfigGlobPath("config/autoload/*.php");
-$configListener->addConfigGlobPath(__DIR__ . "/config/*.php");
-
-$moduleManager = new \Zend\Module\Manager(array(
-    'ZfcBase',
-    'ZfcUser',
-    'CdliTwoStageSignup',
-));
-$moduleManager->events()->attachAggregate($defaultListeners);
-$moduleManager->loadModules();
-
-$config = $configListener->getMergedConfig()->toArray();
-
-$di = new \Zend\Di\Di();
-$di->instanceManager()->addTypePreference('Zend\Di\Locator', $di);
-
-$config = new \Zend\Di\Configuration($config['di']);
-$config->configure($di);
-
-\CdliTwoStageSignupTest\Framework\TestCase::setLocator($di);
+TestCase::setServiceLocator($serviceManager);

@@ -6,6 +6,24 @@ if(!\ZfcUser\Module::getOption('enable_registration'))
     print "Registration is disabled";
     return;       
 }
+
+$form = $this->registerForm;
+
+$form->prepare();
+$form->setAttribute('action', $this->formAction);
+$form->setAttribute('method', 'post');
+
+echo $this->form()->openTag($form);
+
 ?>
 
-<?php echo $registerForm->setAction($this->formAction)->setView($this); ?>
+<dl class="zend_form">
+
+<?php foreach ($form->getElements() as $element) { ?>
+    <?php if ($element->getAttribute('label') != null) { ?>
+    <dt><?php echo $this->formLabel($element); ?></dt>
+    <?php } ?>
+    <dd><?php echo $this->formInput($element) . $this->formElementErrors($element); ?></dd>
+<?php } ?>
+
+</dl>

@@ -1,1 +1,1 @@
-DROP TABLE user_signup_email_verification;
+DROP TABLE IF EXISTS user_signup_email_verification;

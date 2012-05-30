@@ -10,7 +10,8 @@ class MapperTestCase extends TestCase
 
     public function setUp()
     {
-        $this->db = $this->getLocator()->get('Zend\Db\Adapter\Adapter');
+        parent::setUp();
+        $this->db = $this->getServiceLocator()->get('Zend\Db\Adapter\Adapter');
         $this->dbSchemaDown();
         $this->dbSchemaUp();
     }

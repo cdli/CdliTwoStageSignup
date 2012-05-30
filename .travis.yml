@@ -8,16 +8,16 @@ before_script:
   - cd ..
   - git clone git://github.com/zendframework/ZendSkeletonApplication.git --recursive
   - cd ZendSkeletonApplication
-  - git clone --recursive git://github.com/ZF-Commons/ZfcUser.git vendor/ZfcUser
-  - git clone --recursive git://github.com/ZF-Commons/ZfcBase.git vendor/ZfcBase
   - cd vendor && mv ~/builds/cdli/CdliTwoStageSignup . && cd - >/dev/null
+  - cp vendor/CdliTwoStageSignup/.travis/composer.json.dist composer.json
+  - php ./composer.phar install
   - cp vendor/CdliTwoStageSignup/.travis/application.config.php config/
-  - cp vendor/CdliTwoStageSignup/.travis/database.local.config.php config/autoload/
-  - cp vendor/CdliTwoStageSignup/.travis/module.zfcuser.config.php config/autoload/
-  - cp vendor/CdliTwoStageSignup/.travis/module.cdlitwostagesignup.config.php config/autoload/
+  - cp vendor/CdliTwoStageSignup/.travis/database.local.php config/autoload/
+  - cp vendor/CdliTwoStageSignup/.travis/module.zfcuser.local.php config/autoload/
+  - cp vendor/CdliTwoStageSignup/.travis/module.cdlitwostagesignup.local.php config/autoload/
   - cp vendor/CdliTwoStageSignup/tests/phpunit.xml.dist vendor/CdliTwoStageSignup/tests/phpunit.xml
   - mysql -e 'create database travis_test'
-  - mysql -u root travis_test < vendor/CdliTwoStageSignup/data/schema_up.mysql.sql
+#  - mysql -u root travis_test < vendor/CdliTwoStageSignup/data/schema_up.mysql.sql
   - mysql -e 'show tables  FROM travis_test'
 
 script:
