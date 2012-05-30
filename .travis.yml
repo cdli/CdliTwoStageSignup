@@ -4,6 +4,10 @@ php:
   - 5.3
   - 5.4
 
+env:
+  - DB=mysql
+  - DB=sqlite
+
 before_script:
   - cd ..
   - git clone git://github.com/zendframework/ZendSkeletonApplication.git --recursive
@@ -12,13 +16,10 @@ before_script:
   - cp vendor/CdliTwoStageSignup/.travis/composer.json.dist composer.json
   - php ./composer.phar install
   - cp vendor/CdliTwoStageSignup/.travis/application.config.php config/
-  - cp vendor/CdliTwoStageSignup/.travis/database.local.php config/autoload/
+  - cp vendor/CdliTwoStageSignup/.travis/database_$DB.local.php config/autoload/
   - cp vendor/CdliTwoStageSignup/.travis/module.zfcuser.local.php config/autoload/
   - cp vendor/CdliTwoStageSignup/.travis/module.cdlitwostagesignup.local.php config/autoload/
   - cp vendor/CdliTwoStageSignup/tests/phpunit.xml.dist vendor/CdliTwoStageSignup/tests/phpunit.xml
-  - mysql -e 'create database travis_test'
-#  - mysql -u root travis_test < vendor/CdliTwoStageSignup/data/schema_up.mysql.sql
-  - mysql -e 'show tables  FROM travis_test'
 
 script:
   - cd vendor/CdliTwoStageSignup/tests
