@@ -54,7 +54,7 @@ class RegisterController extends ActionController
             $model = $this->getEmailVerificationService()->findByRequestKey($token);
             if ( $model instanceof EvrModel )
             {
-                $locator = $this->getLocator();
+                $locator = $this->getServiceLocator();
                 $formAction = $this->url()->fromRoute('zfcuser/register/step2', array('token'=>$model->getRequestKey()));
 
                 // Listen for the form's init event
@@ -70,7 +70,7 @@ class RegisterController extends ActionController
 
                 // Listen for registration completion and delete the email verification record
                 $service = $this->getEmailVerificationService();
-                $zfcServiceEvents = $locator->get('ZfcUser\Service\User')->events();
+                $zfcServiceEvents = $locator->get('zfcuser_user_service')->events();
                 $zfcServiceEvents->attach('createFromForm', function($e) use ($service, $model) {
                     $service->delete($model);
                 });
@@ -100,7 +100,7 @@ class RegisterController extends ActionController
 
                     // ... and create a view model to render the form
                     $vm = new ViewModel(array(
-                        'registerForm' => $this->getLocator()->get('ZfcUser\Form\Register')
+                        'registerForm' => $locator->get('ZfcUser\Form\Register')
                     ));
                 }
 
