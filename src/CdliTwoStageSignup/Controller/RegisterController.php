@@ -61,10 +61,10 @@ class RegisterController extends ActionController
                 $events = \Zend\EventManager\StaticEventManager::getInstance();
                 $events->attach('ZfcUser\Form\Register','init', function($e) use ($model) {
                     $form = $e->getTarget();
-                    // Replace the email address input field with a hidden field
-                    $form->removeElement('email');
-                    $form->addElement('hidden', 'email', array(
-                        'value' => $model->getEmailAddress()
+                    $form->get('email')->setAttributes(array(
+                        'type' => 'hidden',
+                        'label' => NULL,
+                        'value' => $model->getEmailAddress(),
                     ));
                 });
 
