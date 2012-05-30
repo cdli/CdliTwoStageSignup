@@ -24,8 +24,8 @@ class RegisterController extends ActionController
         $form->setInputFilter($this->getEmailVerificationFilter());
         if ( $this->getRequest()->isPost() )
         {
-            $data = $this->getRequest()->post()->toArray();
-            if ( $form->isValid($data) )
+            $form->setData($this->getRequest()->post());
+            if ( $form->isValid() )
             {
                 $service = $this->getEmailVerificationService();
                 $model = $service->createFromForm($form);
