@@ -45,7 +45,7 @@ class RegisterController extends ActionController
 
     public function checkTokenAction()
     {
-        $this->emailVerificationService->cleanExpiredVerificationRequests();
+        $this->getEmailVerificationService()->cleanExpiredVerificationRequests();
 
         $token = $this->getEvent()->getRouteMatch()->getParam('token');
         $validator = new \Zend\Validator\Hex();
