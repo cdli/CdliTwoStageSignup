@@ -78,14 +78,13 @@ class EmailVerificationTest extends TestCase
     public function testCreateFromForm()
     {
         $form = $this->getMock('Zend\Form\Form');
-        $form->expects($this->once())
-             ->method('getValue')
-             ->with($this->equalTo('email'))
-             ->will($this->returnValue('foo@bar.com'));
+        $form->expects($this->any())
+             ->method('getData')
+             ->will($this->returnValue(array('email'=>'foo@bar.com')));
 
         $evrMapper = $this->getMock('CdliTwoStageSignup\Model\EmailVerificationMapper');
         $evrMapper->expects($this->once())
-                  ->method('add')
+                  ->method('persist')
                   ->with($this->isInstanceOf('CdliTwoStageSignup\Model\EmailVerification'))
                   ->will($this->returnValue(NULL));
 
