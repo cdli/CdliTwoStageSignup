@@ -19,7 +19,7 @@ class EmailVerificationMapperTest extends MapperTestCase
         $this->model->setEmailAddress('foo@bar.com');
         $this->model->setRequestTime(new \DateTime('2001-01-01T01:01:01'));
         $this->model->generateRequestKey();
-        $this->mapper = $this->getLocator()->get('CdliTwoStageSignup\Model\EmailVerificationMapper');
+        $this->mapper = $this->getServiceLocator()->get('CdliTwoStageSignup\Model\EmailVerificationMapper');
     }
 
     public function testAdd()
