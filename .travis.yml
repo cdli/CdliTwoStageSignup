@@ -20,7 +20,7 @@ before_script:
   - cp vendor/CdliTwoStageSignup/.travis/module.zfcuser.local.php config/autoload/
   - cp vendor/CdliTwoStageSignup/.travis/module.cdlitwostagesignup.local.php config/autoload/
   - cp vendor/CdliTwoStageSignup/tests/phpunit.xml.dist vendor/CdliTwoStageSignup/tests/phpunit.xml
-  - test "$DB" = "mysql" && mysql -e 'create database travis_test'
+  - if [[ "$DB" == "mysql" ]]; then mysql -uroot -e 'create database travis_test'; fi
 
 script:
   - cd vendor/CdliTwoStageSignup/tests
