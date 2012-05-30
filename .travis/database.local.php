@@ -6,7 +6,7 @@ return array(
     ),
     'service_manager' => array(
         'factories' => array(
-            'Zend\Db\Adapter\Adapter' => function ($sm) use ($dbParams) {
+            'Zend\Db\Adapter\Adapter' => function ($sm) {
                 return new Zend\Db\Adapter\Adapter(array(
                     'driver'    => 'pdo',
                     'dsn'       => 'mysql:dbname=travis_test;host=localhost',
