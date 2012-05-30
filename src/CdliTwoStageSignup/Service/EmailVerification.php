@@ -52,12 +52,14 @@ class EmailVerification extends EventProvider
      */
     public function createFromForm(Form $form)
     {
+        $data = $form->getData();
+
         $model = new Model();
-        $model->setEmailAddress($form->getValue('email'));
+        $model->setEmailAddress($data['email']);
         $model->setRequestTime(new DateTime('now'));
         $model->generateRequestKey();
         $this->events()->trigger(__FUNCTION__, $this, array('record' => $model, 'form' => $form));
-        $this->evrMapper->add($model);
+        $this->evrMapper->persist($model);
         return $model;
     }
 
