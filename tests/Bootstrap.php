@@ -28,6 +28,7 @@ if (!include('vendor/autoload.php')) {
 
 // Get application stack configuration
 $configuration = include 'config/application.config.php';
+$configuration['module_listener_options']['config_glob_paths'][] = __DIR__ . '/config/{,*.}{global,local}.php';
 
 // Setup service manager
 $serviceManager = new ServiceManager(new ServiceManagerConfiguration($configuration['service_manager']));
