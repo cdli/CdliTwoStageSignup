@@ -68,6 +68,7 @@ class Module implements
                 },
                 'cdlitwostagesignup_ev_filter' => function($sm) {
                     return new Form\EmailVerificationFilter(
+                        $sm->get('zfcuser_uemail_validator'),
                         $sm->get('cdlitwostagesignup_ev_validator')
                     );
                 }
