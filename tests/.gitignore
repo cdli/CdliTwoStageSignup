@@ -1,4 +1,3 @@
-TestConfiguration.php
 log/coverage
 config/*
 !config/*.dist
