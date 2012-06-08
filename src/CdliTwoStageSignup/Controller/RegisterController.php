@@ -72,7 +72,7 @@ class RegisterController extends ActionController
                 $service = $this->getEmailVerificationService();
                 $zfcServiceEvents = $locator->get('zfcuser_user_service')->events();
                 $zfcServiceEvents->attach('register', function($e) use ($service, $model) {
-                    $service->delete($model);
+                    $service->remove($model);
                 });
 
                 // Hook into existing form processing logic
