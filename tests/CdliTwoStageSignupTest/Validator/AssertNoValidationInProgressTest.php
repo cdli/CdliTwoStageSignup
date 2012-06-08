@@ -20,7 +20,7 @@ class AssertNoValidationInProgressTest extends TestCase
         $this->model->setRequestTime(new \DateTime('2001-01-01T01:01:01'));
         $this->model->generateRequestKey();
 
-        $mapper = $this->getMock('CdliTwoStageSignup\Model\EmailVerificationMapper');
+        $mapper = $this->getMock('CdliTwoStageSignup\Mapper\EmailVerification');
         $mapper->expects($this->once())
                ->method('findByEmail')
                ->with($this->equalTo('foo@bar.com'))
@@ -37,7 +37,7 @@ class AssertNoValidationInProgressTest extends TestCase
         $this->model->setRequestTime(new \DateTime('2001-01-01T01:01:01'));
         $this->model->generateRequestKey();
 
-        $mapper = $this->getMock('CdliTwoStageSignup\Model\EmailVerificationMapper');
+        $mapper = $this->getMock('CdliTwoStageSignup\Mapper\EmailVerification');
         $mapper->expects($this->once())
                ->method('findByEmail')
                ->with($this->equalTo('foo@bar.com'))
@@ -55,7 +55,7 @@ class AssertNoValidationInProgressTest extends TestCase
         $this->model->setRequestTime(new \DateTime('now'));
         $this->model->generateRequestKey();
 
-        $mapper = $this->getMock('CdliTwoStageSignup\Model\EmailVerificationMapper');
+        $mapper = $this->getMock('CdliTwoStageSignup\Mapper\EmailVerification');
         $mapper->expects($this->once())
                ->method('findByEmail')
                ->with($this->equalTo('foo@bar.com'))

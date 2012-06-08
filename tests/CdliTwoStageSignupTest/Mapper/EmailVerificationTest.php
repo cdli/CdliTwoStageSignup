@@ -1,12 +1,12 @@
 <?php
-namespace CdliTwoStageSignupTest\Model;
+namespace CdliTwoStageSignupTest\Mapper;
 
 use CdliTwoStageSignupTest\Framework\MapperTestCase;
-use CdliTwoStageSignup\Model\EmailVerificationMapper as Mapper;
+use CdliTwoStageSignup\Mapper\EmailVerification as Mapper;
 use CdliTwoStageSignup\Model\EmailVerification as Model;
 use Zend\Db\Adapter\Adapter as DbAdapter;
 
-class EmailVerificationMapperTest extends MapperTestCase
+class EmailVerificationTest extends MapperTestCase
 {
 
     public function setUp()
@@ -22,9 +22,9 @@ class EmailVerificationMapperTest extends MapperTestCase
         $this->mapper = $this->getServiceLocator()->get('cdlitwostagesignup_ev_modelmapper');
     }
 
-    public function testAdd()
+    public function testPersist()
     {
-        $this->mapper->add($this->model);
+        $this->mapper->persist($this->model);
 
         // Find the inserted record and verify it was created properly
         $result = $this->_queryFindByRequestKey($this->model->getRequestKey());
@@ -34,28 +34,12 @@ class EmailVerificationMapperTest extends MapperTestCase
         $this->assertEquals($this->model->getRequestTime()->format('Y-m-d H:i:s'), $result['request_time']);
     }
 
-    public function testUpdate()
+    public function testRemove()
     {
         $this->importSchema(__DIR__ . '/_files/singlerecord.sql');
+        $model = $this->mapper->remove($this->model);
 
-        $this->model->setEmailAddress('bar@baz.com');
-        $this->mapper->update($this->model);
-
-        // Find the inserted record and verify it was created properly
-        $result = $this->_queryFindByRequestKey($this->model->getRequestKey());
-        $this->assertInternalType('array', $result);
-        $this->assertEquals($this->model->getRequestKey(), $result['request_key']);
-        $this->assertEquals($this->model->getEmailAddress(), $result['email_address']);
-        $this->assertEquals($this->model->getRequestTime()->format('Y-m-d H:i:s'), $result['request_time']);
-    }
-
-
-    public function testDelete()
-    {
-        $this->importSchema(__DIR__ . '/_files/singlerecord.sql');
-        $model = $this->mapper->delete($this->model);
-
-        // Verify that it was deleted
+        // Verify that it was removed
         $result = $this->_queryFindByRequestKey($this->model->getRequestKey());
         $this->assertFalse($result);
     }
@@ -82,7 +66,7 @@ class EmailVerificationMapperTest extends MapperTestCase
         $m = new Model();
         $m->setEmailAddress('bar@baz.com');
         $m->generateRequestKey();
-        $this->mapper->add($m);
+        $this->mapper->persist($m);
 
         $this->mapper->cleanExpiredVerificationRequests();
 

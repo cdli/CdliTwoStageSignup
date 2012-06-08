@@ -23,7 +23,7 @@ class EmailVerificationTest extends TestCase
 
     public function testFindByRequestKey()
     {
-        $evrMapper = $this->getMock('CdliTwoStageSignup\Model\EmailVerificationMapper');
+        $evrMapper = $this->getMock('CdliTwoStageSignup\Mapper\EmailVerification');
         $evrMapper->expects($this->once())
                   ->method('findByRequestKey')
                   ->with($this->equalTo('DCE2D890895CF02'))
@@ -37,7 +37,7 @@ class EmailVerificationTest extends TestCase
 
     public function testFindByEmail()
     {
-        $evrMapper = $this->getMock('CdliTwoStageSignup\Model\EmailVerificationMapper');
+        $evrMapper = $this->getMock('CdliTwoStageSignup\Mapper\EmailVerification');
         $evrMapper->expects($this->once())
                   ->method('findByEmail')
                   ->with($this->equalTo('foo@bar.com'))
@@ -51,7 +51,7 @@ class EmailVerificationTest extends TestCase
 
     public function testCleanExpiredVerificationRequests()
     {
-        $evrMapper = $this->getMock('CdliTwoStageSignup\Model\EmailVerificationMapper');
+        $evrMapper = $this->getMock('CdliTwoStageSignup\Mapper\EmailVerification');
         $evrMapper->expects($this->once())
                   ->method('cleanExpiredVerificationRequests')
                   ->with($this->anything())
@@ -62,17 +62,17 @@ class EmailVerificationTest extends TestCase
         $service->cleanExpiredVerificationRequests();
     }
 
-    public function testDelete()
+    public function testRemove()
     {
-        $evrMapper = $this->getMock('CdliTwoStageSignup\Model\EmailVerificationMapper');
+        $evrMapper = $this->getMock('CdliTwoStageSignup\Mapper\EmailVerification');
         $evrMapper->expects($this->once())
-                  ->method('delete')
+                  ->method('remove')
                   ->with($this->model)
                   ->will($this->returnValue(1));
 
         $service = new Service();
         $service->setEmailVerificationMapper($evrMapper);
-        $this->assertEquals(1, $service->delete($this->model));
+        $this->assertEquals(1, $service->remove($this->model));
     }
 
     public function testCreateFromForm()
@@ -82,7 +82,7 @@ class EmailVerificationTest extends TestCase
              ->method('getData')
              ->will($this->returnValue(array('email'=>'foo@bar.com')));
 
-        $evrMapper = $this->getMock('CdliTwoStageSignup\Model\EmailVerificationMapper');
+        $evrMapper = $this->getMock('CdliTwoStageSignup\Mapper\EmailVerification');
         $evrMapper->expects($this->once())
                   ->method('persist')
                   ->with($this->isInstanceOf('CdliTwoStageSignup\Model\EmailVerification'))
