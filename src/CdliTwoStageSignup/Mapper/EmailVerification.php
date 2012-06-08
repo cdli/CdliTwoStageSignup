@@ -62,8 +62,16 @@ class EmailVerification extends AbstractDbMapper
         ));
     }
 
+    public function persist($evrModel)
+    {
+        $data = $this->toScalarValueArray($evrModel);
+        $this->events()->trigger(__FUNCTION__ . '.pre', $this, array('data' => $data, 'record' => $evrModel));
+        $this->getTableGateway()->insert((array) $data);
+        return $evrModel;
+    }
+
     public function getTableName() { return $this->tableName; }
-    public function getPrimaryKey() { return $this->keyField; }
+    public function getPrimaryKey() { $this->keyField; }
     public function getPaginatorAdapter(array $params) { }
     public function getClassName() { return 'CdliTwoStageSignup\Model\EmailVerification'; }
 }
