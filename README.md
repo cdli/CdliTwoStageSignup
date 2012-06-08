@@ -17,17 +17,39 @@ Email Address Verification is performed by sending an email with a registration 
 Installation
 ------------
 
-### Main Setup
+### (1) Installation
 
-1. Install the [ZfcUser](https://github.com/ZF-Commons/ZfcUser) ZF2 module
-   by cloning it into `./vendor/` and enabling it in your
-   `application.config.php` file.
-2. Clone this project into your `./vendor/` directory and enable it in your
-   `application.config.php` file.
+Choose one of the two available installation methods:
+
+#### Composer
+
+1. Add the following line inside the require block of your composer.json file:
+```
+"cdli/CdliTwoStageSignup": "dev-master"
+```
+
+2. Run `php composer.phar update`
+
+#### Git Submodule
+
+1. Follow the [ZfcUser](https://github.com/ZF-Commons/ZfcUser) installation instructions to install that module and it's dependencies.
+
+2. Clone this project into your `./vendor/` directory
+```
+cd vendor;
+git clone git://github.com/cdli/CdliTwoStageSignup.git;
+```
+
+###  (2) Configuration
+
+1. Ensure that this module and it's dependencies are enabled in your `application.config.php` file in the following order:
+    * ZfcBase
+    * ZfcUser
+    * CdliTwoStageSignup
 3. Import the SQL schema located in `./vendor/CdliTwoStageSignup/data/schema_up.mysql.sql`.
-4. Copy `./vendor/CdliTwoStageSignup/config/module.cdlitwostagesignup.config.php.dist` to
-   `./config/autoload/module.cdlitwostagesignup.config.php`.
-5. Fill in the required configuration variable values in  `./config/autoload/module.cdlitwostagesignup.config.php` 
+4. Copy `./vendor/CdliTwoStageSignup/config/module.cdlitwostagesignup.php.dist` to
+   `./config/autoload/module.cdlitwostagesignup.global.php`.
+5. Fill in the required configuration variable values in  `./config/autoload/module.cdlitwostagesignup.global.php` 
 
 
 DISCLAIMER
