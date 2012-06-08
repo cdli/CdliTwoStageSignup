@@ -71,7 +71,7 @@ class RegisterController extends ActionController
                 // Listen for registration completion and delete the email verification record
                 $service = $this->getEmailVerificationService();
                 $zfcServiceEvents = $locator->get('zfcuser_user_service')->events();
-                $zfcServiceEvents->attach('createFromForm', function($e) use ($service, $model) {
+                $zfcServiceEvents->attach('register', function($e) use ($service, $model) {
                     $service->delete($model);
                 });
 
