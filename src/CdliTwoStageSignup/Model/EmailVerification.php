@@ -2,9 +2,9 @@
 
 namespace CdliTwoStageSignup\Model;
 
-use ZfcBase\Model\ModelAbstract;
+use ZfcBase\Model\AbstractModel;
 
-class EmailVerification extends ModelAbstract
+class EmailVerification extends AbstractModel
 {
     protected $requestKey;
     protected $emailAddress;

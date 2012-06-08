@@ -1,30 +1,21 @@
 <?php
 
-namespace CdliTwoStageSignup\Model;
+namespace CdliTwoStageSignup\Mapper;
 
-use ZfcBase\Mapper\DbMapperAbstract,
-    CdliTwoStageSignup\Module as modCTSS,
-    ArrayObject,
-    DateTime;
+use ZfcBase\Mapper\AbstractDbMapper;
+use CdliTwoStageSignup\Module as modCTSS;
+use CdliTwoStageSignup\Model\EmailVerification as Model;
+use ArrayObject;
+use DateTime;
 
-class EmailVerificationMapper extends DbMapperAbstract
+class EmailVerification extends AbstractDbMapper
 {
     protected $tableName         = 'user_signup_email_verification';
     protected $keyField          = 'request_key';
     protected $emailField        = 'email_address';
     protected $reqtimeField        = 'request_time';
 
-    public function add(EmailVerification $evrModel)
-    {
-        return $this->persist($evrModel);
-    }
-
-    public function update(EmailVerification $evrModel)
-    {
-        return $this->persist($evrModel, 'update');
-    }
-
-    public function delete(EmailVerification $evrModel)
+    public function remove($evrModel)
     {
         return $this->getTableGateway()->delete(array($this->keyField => $evrModel->getRequestKey()));
     }
@@ -58,23 +49,29 @@ class EmailVerificationMapper extends DbMapperAbstract
     protected function fromRow($row)
     {
         if (!$row) return false;
-        $evr = EmailVerification::fromArray($row->getArrayCopy());
+        $evr = Model::fromArray($row->getArrayCopy());
         return $evr;
     }
 
-    public function persist(EmailVerification $evrModel, $mode = 'insert')
+    public function toScalarValueArray($evrModel)
     {
-        $data = new ArrayObject(array(
+        return new ArrayObject(array(
             $this->keyField      => $evrModel->getRequestKey(),
             $this->emailField    => $evrModel->getEmailAddress(),
             $this->reqtimeField  => $evrModel->getRequestTime()->format('Y-m-d H:i:s'),
         ));
+    }
+
+    public function persist($evrModel)
+    {
+        $data = $this->toScalarValueArray($evrModel);
         $this->events()->trigger(__FUNCTION__ . '.pre', $this, array('data' => $data, 'record' => $evrModel));
-        if ('update' === $mode) {
-            $this->getTableGateway()->update((array) $data, array($this->keyField => $evrModel->getRequestKey()));
-        } elseif ('insert' === $mode) {
-            $this->getTableGateway()->insert((array) $data);
-        }
+        $this->getTableGateway()->insert((array) $data);
         return $evrModel;
     }
+
+    public function getTableName() { return $this->tableName; }
+    public function getPrimaryKey() { $this->keyField; }
+    public function getPaginatorAdapter(array $params) { }
+    public function getClassName() { return 'CdliTwoStageSignup\Model\EmailVerification'; }
 }

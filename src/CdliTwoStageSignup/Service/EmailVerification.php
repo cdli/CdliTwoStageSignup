@@ -8,7 +8,7 @@ use Zend\Form\Form,
     CdliTwoStageSignup\Module as modCTSS,
     ZfcBase\EventManager\EventProvider,
     CdliTwoStageSignup\Model\EmailVerification as Model,
-    CdliTwoStageSignup\Model\EmailVerificationMapper as ModelMapper,
+    CdliTwoStageSignup\Mapper\EmailVerification as ModelMapper,
     Zend\Mail\Message as EmailMessage,
     Zend\Mail\Transport\TransportInterface as EmailTransport,
     Zend\View\Model\ViewModel,
@@ -39,9 +39,9 @@ class EmailVerification extends EventProvider
         return $this->evrMapper->cleanExpiredVerificationRequests();
     }
 
-    public function delete(Model $m)
+    public function remove(Model $m)
     {
-        return $this->evrMapper->delete($m);
+        return $this->evrMapper->remove($m);
     }
 
     /**

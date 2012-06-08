@@ -3,7 +3,7 @@
 namespace CdliTwoStageSignup\Validator;
 
 use Zend\Validator\AbstractValidator,
-    CdliTwoStageSignup\Model\EmailVerificationMapper;
+    CdliTwoStageSignup\Mapper\EmailVerification as EmailVerificationMapper;
 
 class AssertNoValidationInProgress extends AbstractValidator
 {

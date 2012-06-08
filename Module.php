@@ -48,7 +48,7 @@ class Module implements
                     return $obj;
                 },
                 'cdlitwostagesignup_ev_modelmapper' => function($sm) {
-                    $obj = new Model\EmailVerificationMapper();
+                    $obj = new Mapper\EmailVerification();
                     $obj->setTableGateway($sm->get('cdlitwostagesignup_ev_tablegateway'));
                     return $obj;
                 },
@@ -68,8 +68,12 @@ class Module implements
                 },
                 'cdlitwostagesignup_ev_filter' => function($sm) {
                     return new Form\EmailVerificationFilter(
+                        $sm->get('zfcuser_uemail_validator'),
                         $sm->get('cdlitwostagesignup_ev_validator')
                     );
+                },
+                'Zend\Mail\Transport\Sendmail' => function($sm) {
+                    return new \Zend\Mail\Transport\Sendmail();
                 }
             ),
         );
