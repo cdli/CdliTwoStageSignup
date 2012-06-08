@@ -71,6 +71,9 @@ class Module implements
                         $sm->get('zfcuser_uemail_validator'),
                         $sm->get('cdlitwostagesignup_ev_validator')
                     );
+                },
+                'Zend\Mail\Transport\Sendmail' => function($sm) {
+                    return new \Zend\Mail\Transport\Sendmail();
                 }
             ),
         );
