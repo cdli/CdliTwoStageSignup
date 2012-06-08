@@ -48,7 +48,7 @@ class Module implements
                     return $obj;
                 },
                 'cdlitwostagesignup_ev_modelmapper' => function($sm) {
-                    $obj = new Model\EmailVerificationMapper();
+                    $obj = new Mapper\EmailVerification();
                     $obj->setTableGateway($sm->get('cdlitwostagesignup_ev_tablegateway'));
                     return $obj;
                 },
