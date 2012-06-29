@@ -1,8 +1,8 @@
 <?php
-namespace CdliTwoStageSignupTest\Model;
+namespace CdliTwoStageSignupTest\Entity;
 
 use CdliTwoStageSignupTest\Framework\TestCase;
-use CdliTwoStageSignup\Model\EmailVerification;
+use CdliTwoStageSignup\Entity\EmailVerification;
 
 class EmailVerificationTest extends TestCase
 {

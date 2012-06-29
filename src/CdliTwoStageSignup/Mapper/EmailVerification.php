@@ -1,23 +1,24 @@
 <?php
-
 namespace CdliTwoStageSignup\Mapper;
 
 use ZfcBase\Mapper\AbstractDbMapper;
-use CdliTwoStageSignup\Module as modCTSS;
 use CdliTwoStageSignup\Model\EmailVerification as Model;
-use ArrayObject;
-use DateTime;
+use Zend\Db\Sql\Sql;
 
 class EmailVerification extends AbstractDbMapper
 {
     protected $tableName         = 'user_signup_email_verification';
     protected $keyField          = 'request_key';
     protected $emailField        = 'email_address';
-    protected $reqtimeField        = 'request_time';
+    protected $reqtimeField      = 'request_time';
 
     public function remove($evrModel)
     {
-        return $this->getTableGateway()->delete(array($this->keyField => $evrModel->getRequestKey()));
+        $sql = new Sql($this->getDbAdapter(), $this->tableName);
+        $statement = $sql->prepareStatementForSqlObject($sql->delete(array(
+            $this->keyField => $evrModel->getRequestKey()
+        )));
+        var_dump($statement->execute());
     }
 
     public function findByEmail($email)
