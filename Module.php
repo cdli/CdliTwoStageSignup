@@ -13,12 +13,6 @@ class Module implements
     ConfigProviderInterface,
     ServiceProviderInterface
 {
-    protected static $options;
-
-    public function init(ModuleManager $moduleManager)
-    {
-        $moduleManager->events()->attach('loadModules.post', array($this, 'modulesLoaded'));
-    }
 
     public function getAutoloaderConfig()
     {
@@ -34,6 +28,11 @@ class Module implements
         );
     }
 
+    public function getConfig($env = null)
+    {
+        return include __DIR__ . '/config/module.config.php';
+    }
+
     public function getServiceConfiguration()
     {
         return array(
@@ -41,6 +40,10 @@ class Module implements
                 'cdlitwostagesignup_ev_form' => 'CdliTwoStageSignup\Form\EmailVerification',
             ),
             'factories' => array(
+                'cdlitwostagesignup_module_options' => function($sm) {
+                    $config = $sm->get('Configuration');
+                    return new Options\ModuleOptions($config['cdli-twostagesignup']);
+                },
                 'cdlitwostagesignup_ev_validator' => function($sm) {
                     $obj = new Validator\AssertNoValidationInProgress();
                     $obj->setMapper($sm->get('cdlitwostagesignup_ev_modelmapper'));
@@ -79,25 +82,4 @@ class Module implements
         );
     }
 
-    public function getConfig($env = null)
-    {
-        return include __DIR__ . '/config/module.config.php';
-    }
-
-    public function modulesLoaded($e)
-    {
-        $config = $e->getConfigListener()->getMergedConfig();
-        static::$options = $config['cdli-twostagesignup'];
-    }
-
-    /**
-     * @TODO: Come up with a better way of handling module settings/options
-     */
-    public static function getOption($option)
-    {
-        if (!isset(static::$options[$option])) {
-            return null;
-        }
-        return static::$options[$option];
-    }
 }

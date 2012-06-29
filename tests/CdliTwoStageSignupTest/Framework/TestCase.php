@@ -13,6 +13,11 @@ class TestCase extends PHPUnit_Framework_TestCase
     protected static $locator;
 
     /**
+     * @var TestCaseOptions
+     */
+    protected static $options;
+
+    /**
      * @param ServiceLocatorInterface $locator
      */
     public static function setServiceLocator(ServiceLocatorInterface $locator)
@@ -26,5 +31,15 @@ class TestCase extends PHPUnit_Framework_TestCase
     public function getServiceLocator()
     {
     	return self::$locator;
+    }
+
+    public static function setOptions(TestCaseOptions $o)
+    {
+        self::$options = $o;
+    }
+
+    public function getOptions()
+    {
+        return self::$options;
     }
 }
