@@ -3,7 +3,7 @@ namespace CdliTwoStageSignupTest\Mapper;
 
 use CdliTwoStageSignupTest\Framework\MapperTestCase;
 use CdliTwoStageSignup\Mapper\EmailVerification as Mapper;
-use CdliTwoStageSignup\Model\EmailVerification as Model;
+use CdliTwoStageSignup\Entity\EmailVerification as Entity;
 use Zend\Db\Adapter\Adapter as DbAdapter;
 
 class EmailVerificationTest extends MapperTestCase
@@ -15,7 +15,7 @@ class EmailVerificationTest extends MapperTestCase
 
         date_default_timezone_set('GMT');
 
-        $this->model = new Model();
+        $this->model = new Entity();
         $this->model->setEmailAddress('foo@bar.com');
         $this->model->setRequestTime(new \DateTime('2001-01-01T01:01:01'));
         $this->model->generateRequestKey();
@@ -63,7 +63,7 @@ class EmailVerificationTest extends MapperTestCase
         $this->importSchema(__DIR__ . '/_files/singlerecord.sql');
 
         // Add a second, non-expired request
-        $m = new Model();
+        $m = new Entity();
         $m->setEmailAddress('bar@baz.com');
         $m->generateRequestKey();
         $this->mapper->persist($m);
@@ -73,10 +73,10 @@ class EmailVerificationTest extends MapperTestCase
         $set = $this->db->query('SELECT * FROM '.$this->db->platform->quoteIdentifier('user_signup_email_verification'))->execute();
         # @TODO Count with PDO Sqlite appears to be broken (always zero)
         #$this->assertEquals(1, $set->count());
-        $actualModel = $set->current();
-        $this->assertEquals($m->getRequestKey(), $actualModel['request_key']);
-        $this->assertEquals($m->getEmailAddress(), $actualModel['email_address']);
-        $this->assertEquals($m->getRequestTime()->format('Y-m-d H:i:s'), $actualModel['request_time']);
+        $actualEntity = $set->current();
+        $this->assertEquals($m->getRequestKey(), $actualEntity['request_key']);
+        $this->assertEquals($m->getEmailAddress(), $actualEntity['email_address']);
+        $this->assertEquals($m->getRequestTime()->format('Y-m-d H:i:s'), $actualEntity['request_time']);
     }
 
     protected function _queryFindByRequestKey($key)

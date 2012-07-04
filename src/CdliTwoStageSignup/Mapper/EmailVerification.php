@@ -15,36 +15,39 @@ class EmailVerification extends AbstractDbMapper
     public function remove($evrModel)
     {
         $sql = new Sql($this->getDbAdapter(), $this->tableName);
-        $statement = $sql->prepareStatementForSqlObject($sql->delete(array(
-            $this->keyField => $evrModel->getRequestKey()
-        )));
-        var_dump($statement->execute());
+        $delete= $sql->delete();
+        $delete->where->equalTo($this->keyField, $evrModel->getRequestKey());
+        $statement = $sql->prepareStatementForSqlObject($delete);
+        $statement->execute();
+        return true;
     }
 
     public function findByEmail($email)
     {
-        $rowset = $this->getTableGateway()->select(array($this->emailField => $email));
-        $row = $rowset->current();
-        $evr = $this->fromRow($row);
-        $this->events()->trigger(__FUNCTION__ . '.post', $this, array('user' => $evr, 'row' => $row));
-        return $evr;
+        $select = $this->select()
+                       ->from($this->tableName)
+                       ->where(array($this->emailField => $email));
+        return $this->selectWith($select)->current();
     }
 
     public function findByRequestKey($key)
     {
-        $rowset = $this->getTableGateway()->select(array($this->keyField => $key));
-        $row = $rowset->current();
-        $evr = $this->fromRow($row);
-        $this->events()->trigger(__FUNCTION__ . '.post', $this, array('user' => $evr, 'row' => $row));
-        return $evr;
+        $select = $this->select()
+                       ->from($this->tableName)
+                       ->where(array($this->keyField => $key));
+        return $this->selectWith($select)->current();
     }
 
     public function cleanExpiredVerificationRequests($expiryTime=86400)
     {
         $now = new \DateTime((int)$expiryTime . ' seconds ago');
-        $where = new \Zend\Db\Sql\Where();
-        $where->lessThanOrEqualTo($this->reqtimeField, $now->format('Y-m-d H:i:s'));
-        return $this->getTableGateway()->delete($where);
+
+        $sql = new Sql($this->getDbAdapter(), $this->tableName);
+        $delete = $sql->delete();
+        $delete ->where->lessThanOrEqualTo($this->reqtimeField, $now->format('Y-m-d H:i:s'));
+        $statement = $sql->prepareStatementForSqlObject($delete);
+        $statement->execute();
+        return true; 
     }
 
     protected function fromRow($row)
@@ -56,19 +59,19 @@ class EmailVerification extends AbstractDbMapper
 
     public function toScalarValueArray($evrModel)
     {
-        return new ArrayObject(array(
+        return new \ArrayObject(array(
             $this->keyField      => $evrModel->getRequestKey(),
             $this->emailField    => $evrModel->getEmailAddress(),
             $this->reqtimeField  => $evrModel->getRequestTime()->format('Y-m-d H:i:s'),
         ));
     }
 
+    /**
+     * @todo
+     */
     public function persist($evrModel)
     {
-        $data = $this->toScalarValueArray($evrModel);
-        $this->events()->trigger(__FUNCTION__ . '.pre', $this, array('data' => $data, 'record' => $evrModel));
-        $this->getTableGateway()->insert((array) $data);
-        return $evrModel;
+        return parent::insert($evrModel);
     }
 
     public function getTableName() { return $this->tableName; }

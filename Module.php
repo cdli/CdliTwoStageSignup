@@ -6,7 +6,8 @@ use Zend\ModuleManager\ModuleManager,
     Zend\EventManager\StaticEventManager,
     Zend\ModuleManager\Feature\AutoloaderProviderInterface,
     Zend\ModuleManager\Feature\ConfigProviderInterface,
-    Zend\ModuleManager\Feature\ServiceProviderInterface;
+    Zend\ModuleManager\Feature\ServiceProviderInterface,
+    ZfcUser\Validator\NoRecordExists as ZfcUserUniqueEmailValidator;
 
 class Module implements 
     AutoloaderProviderInterface,
@@ -52,7 +53,9 @@ class Module implements
                 },
                 'cdlitwostagesignup_ev_modelmapper' => function($sm) {
                     $obj = new Mapper\EmailVerification();
-                    $obj->setTableGateway($sm->get('cdlitwostagesignup_ev_tablegateway'));
+                    $obj->setDbAdapter($sm->get('zfcuser_zend_db_adapter'));
+                    $obj->setEntityPrototype(new Entity\EmailVerification());
+                    $obj->setHydrator(new  Mapper\EmailVerificationHydrator(false));
                     return $obj;
                 },
                 'cdlitwostagesignup_ev_tablegateway' => function($sm) {
@@ -67,11 +70,15 @@ class Module implements
                     $obj->setEmailVerificationMapper($sm->get('cdlitwostagesignup_ev_modelmapper'));
                     $obj->setMessageRenderer($sm->get('Zend\View\Renderer\PhpRenderer'));
                     $obj->setMessageTransport($sm->get('Zend\Mail\Transport\Sendmail'));
+                    $obj->setEmailMessageOptions($sm->get('cdlitwostagesignup_module_options'));
                     return $obj;
                 },
                 'cdlitwostagesignup_ev_filter' => function($sm) {
                     return new Form\EmailVerificationFilter(
-                        $sm->get('zfcuser_uemail_validator'),
+                        new ZfcUserUniqueEmailValidator(array(
+                            'mapper' => $sm->get('zfcuser_user_mapper'),
+                            'key'    => 'email'                            
+                        )),
                         $sm->get('cdlitwostagesignup_ev_validator')
                     );
                 },

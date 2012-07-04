@@ -1,22 +1,15 @@
 <?php
 return array(
-    'cdli-twostagesignup' => array(
-        'email_from_address' => '',
-        'verification_email_subject_line' => 'Email Address Verification',
-    ),
-
     'view_manager' => array(
         'template_path_stack' => array(
             'cdlitwostagesignup' => __DIR__ . '/../view',
         ),
-        'helper_map' => array() 
     ),
 
-    'controller' => array(
-        'classes' => array(
+    'controllers' => array(
+        'invokables' => array(
             'cdlitwostagesignup_ev_controller' => 'CdliTwoStageSignup\Controller\RegisterController',
         ),
-        'map' => array(),
     ),
 
     'router' => array(

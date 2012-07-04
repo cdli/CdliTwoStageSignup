@@ -2,15 +2,15 @@
 
 namespace CdliTwoStageSignup\Controller;
 
-use Zend\Mvc\Controller\ActionController,
+use Zend\Mvc\Controller\AbstractActionController,
     Zend\Http\Response,
     Zend\View\Model\ViewModel,
     CdliTwoStageSignup\Form\EmailVerification as EvrForm,
     CdliTwoStageSignup\Form\EmailVerificationFilter as EvrFilter,
-    CdliTwoStageSignup\Model\EmailVerification as EvrModel,
+    CdliTwoStageSignup\Entity\EmailVerification as EvrModel,
     CdliTwoStageSignup\Service\EmailVerification as EvrService;
 
-class RegisterController extends ActionController
+class RegisterController extends AbstractActionController
 {
     protected $emailVerificationForm = NULL;
     protected $emailVerificationFilter = NULL;
@@ -24,7 +24,7 @@ class RegisterController extends ActionController
         $form->setInputFilter($this->getEmailVerificationFilter());
         if ( $this->getRequest()->isPost() )
         {
-            $form->setData($this->getRequest()->post());
+            $form->setData($this->getRequest()->getPost());
             if ( $form->isValid() )
             {
                 $service = $this->getEmailVerificationService();
@@ -38,7 +38,10 @@ class RegisterController extends ActionController
         }
 
         // Render the form
-        $vm = new ViewModel(array('form' => $form));
+        $vm = new ViewModel(array(
+            'form'               => $form,
+            'enableRegistration' => $this->getServiceLocator()->get('zfcuser_module_options')->getEnableRegistration()
+        ));
         $vm->setTemplate('cdli-twostagesignup/email-verification/form');
         return $vm;
     }
@@ -47,7 +50,7 @@ class RegisterController extends ActionController
     {
         $this->getEmailVerificationService()->cleanExpiredVerificationRequests();
 
-        $token = $this->getEvent()->getRouteMatch()->getParam('token');
+        $token = $this->plugin('params')->fromRoute('token');
         $validator = new \Zend\Validator\Hex();
         if ( $validator->isValid($token) )
         {
@@ -61,16 +64,15 @@ class RegisterController extends ActionController
                 $events = \Zend\EventManager\StaticEventManager::getInstance();
                 $events->attach('ZfcUser\Form\Register','init', function($e) use ($model) {
                     $form = $e->getTarget();
-                    $form->get('email')->setAttributes(array(
+                    $form->get('email')->setLabel('')->setAttributes(array(
                         'type' => 'hidden',
-                        'label' => NULL,
                         'value' => $model->getEmailAddress(),
                     ));
                 });
 
                 // Listen for registration completion and delete the email verification record
                 $service = $this->getEmailVerificationService();
-                $zfcServiceEvents = $locator->get('zfcuser_user_service')->events();
+                $zfcServiceEvents = $locator->get('zfcuser_user_service')->getEventManager();
                 $zfcServiceEvents->attach('register', function($e) use ($service, $model) {
                     $service->remove($model);
                 });
@@ -80,28 +82,15 @@ class RegisterController extends ActionController
                 if ( $vm instanceof Response )
                 {
                     $zfcUserAction = $this->url()->fromRoute('zfcuser/register');
+                    $stepTwoRoute = $this->url()->fromRoute('zfcuser/register/step2', array('token' => $token));
 
                     // Intercept form validation failure redirects from ZfcUser
-                    $locationHeaders = $this->getResponse()->headers()->get('Location');
-                    if ( count($locationHeaders) > 0 ) 
-                    {
-                        $shouldInterceptRedirect = false;
-                        foreach ( $this->getResponse()->headers()->get('Location') as $header )
-                            if ( $header == $zfcUserAction )
-                                $shouldInterceptRedirect = true;
-                        if ( !$shouldInterceptRedirect )
-                            return $vm;
+                    $allHeaders = $this->getResponse()->getHeaders();
+                    $locationHeader = $allHeaders->get('Location');
+                    if ( $locationHeader->getUri() == $zfcUserAction ) {
+                        $locationHeader->setUri($stepTwoRoute);
                     }
-
-                    // If we get here, we must intercept, so reset the response
-                    $response = $this->getResponse();
-                    $response->setStatusCode(200);
-                    $response->headers()->clearHeaders();
-
-                    // ... and create a view model to render the form
-                    $vm = new ViewModel(array(
-                        'registerForm' => $locator->get('ZfcUser\Form\Register')
-                    ));
+                    return $vm;
                 }
 
                 // Defeat ZfcUser's attempt to render it's own view script

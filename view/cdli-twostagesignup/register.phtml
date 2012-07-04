@@ -1,10 +1,10 @@
 <h1>Register</h1>
 
 <?php 
-if(!\ZfcUser\Module::getOption('enable_registration'))
+if(!$this->enableRegistration)
 {
-    print "Registration is disabled";
-    return;       
+    print '<div class="alert alert-error">Registration is disabled</div>';
+    return;
 }
 
 $form = $this->registerForm;
@@ -20,7 +20,7 @@ echo $this->form()->openTag($form);
 <dl class="zend_form">
 
 <?php foreach ($form->getElements() as $element) { ?>
-    <?php if ($element->getAttribute('label') != null) { ?>
+    <?php if ($element->getLabel()) { ?>
     <dt><?php echo $this->formLabel($element); ?></dt>
     <?php } ?>
     <dd><?php echo $this->formInput($element) . $this->formElementErrors($element); ?></dd>
