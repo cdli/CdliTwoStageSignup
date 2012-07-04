@@ -3,14 +3,17 @@ namespace CdliTwoStageSignupTest\Entity;
 
 use CdliTwoStageSignupTest\Framework\TestCase;
 use CdliTwoStageSignup\Entity\EmailVerification;
+use CdliTwoStageSignup\Mapper\EmailVerificationHydrator;
 
 class EmailVerificationTest extends TestCase
 {
     public function setUp()
     {
+        $this->hydrator = new EmailVerificationHydrator(true);
+
         $this->model = new EmailVerification();
         $this->model->setRequestTime(new \DateTime('2001-01-01T01:01:01+0100'));
-        $this->initialState = $this->model->toArray();
+        $this->initialState = $this->hydrator->extract($this->model);
     }
 
     public function testGetSetRequestKey()
@@ -19,7 +22,7 @@ class EmailVerificationTest extends TestCase
         $this->assertEquals('foo',$this->model->getRequestKey());
         $expectedState = $this->initialState;
         $expectedState['requestKey'] = 'foo';
-        $this->assertEquals($expectedState, $this->model->toArray());
+        $this->assertEquals($expectedState, $this->hydrator->extract($this->model));
     }
 
     public function testGetSetEmailAddress()
@@ -28,7 +31,7 @@ class EmailVerificationTest extends TestCase
         $this->assertEquals('foo@bar.com',$this->model->getEmailAddress());
         $expectedState = $this->initialState;
         $expectedState['emailAddress'] = 'foo@bar.com';
-        $this->assertEquals($expectedState, $this->model->toArray());
+        $this->assertEquals($expectedState, $this->hydrator->extract($this->model));
     }
 
     public function testGenerateRequestKey()
@@ -44,8 +47,8 @@ class EmailVerificationTest extends TestCase
         $this->model->setRequestTime($objDate);
         $this->assertEquals($objDate,$this->model->getRequestTime());
         $expectedState = $this->initialState;
-        $expectedState['requestTime'] = $objDate;
-        $this->assertEquals($expectedState, $this->model->toArray());
+        $expectedState['requestTime'] = $objDate->format('Y-m-d H:i:s');
+        $this->assertEquals($expectedState, $this->hydrator->extract($this->model));
     }
 
     public function testIsExpired()

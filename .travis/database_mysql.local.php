@@ -1,8 +1,8 @@
 <?php
 return array(
-    'cdli-twostagesignup' => array(
-        'test_database_schema_up'   => 'schema_up.mysql.sql',
-        'test_database_schema_down' => 'schema_down.sql',
+    'cdli-twostagesignup-test' => array(
+        'database_schema_up'   => 'schema_up.mysql.sql',
+        'database_schema_down' => 'schema_down.sql',
     ),
     'service_manager' => array(
         'factories' => array(
