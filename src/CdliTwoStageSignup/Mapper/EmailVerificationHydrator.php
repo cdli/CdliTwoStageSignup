@@ -1,0 +1,53 @@
+<?php
+
+namespace CdliTwoStageSignup\Mapper;
+
+use Zend\Stdlib\Hydrator\ClassMethods;
+use CdliTwoStageSignup\Entity\EmailVerification as Entity;
+
+class EmailVerificationHydrator extends ClassMethods
+{
+    /**
+     * Extract values from an object
+     *
+     * @param  object $object
+     * @return array
+     * @throws Exception\InvalidArgumentException
+     */
+    public function extract($object)
+    {
+        if ($object instanceof \DateTime) {
+            return $object->format('Y-m-d H:i:s');
+        }
+        if (!$object instanceof Entity) {
+            throw new \InvalidArgumentException('$object must be an instance of EmailVerification entity');
+        }
+        /* @var $object UserInterface*/
+        $data = parent::extract($object);
+        return $data;
+    }
+
+    /**
+     * Hydrate $object with the provided $data.
+     *
+     * @param  array $data
+     * @param  object $object
+     * @return UserInterface
+     * @throws Exception\InvalidArgumentException
+     */
+    public function hydrate(array $data, $object)
+    {
+        if (!$object instanceof Entity) {
+            throw new \InvalidArgumentException('$object must be an instance of EmailVerification entity');
+        }
+        $data['request_time'] = new \DateTime($data['request_time']);
+        return parent::hydrate($data, $object);
+    }
+
+    protected function mapField($keyFrom, $keyTo, array $array)
+    {
+        $array[$keyTo] = $array[$keyFrom];
+        unset($array[$keyFrom]);
+        return $array;
+    }
+}

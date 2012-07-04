@@ -6,19 +6,14 @@ use Zend\ModuleManager\ModuleManager,
     Zend\EventManager\StaticEventManager,
     Zend\ModuleManager\Feature\AutoloaderProviderInterface,
     Zend\ModuleManager\Feature\ConfigProviderInterface,
-    Zend\ModuleManager\Feature\ServiceProviderInterface;
+    Zend\ModuleManager\Feature\ServiceProviderInterface,
+    ZfcUser\Validator\NoRecordExists as ZfcUserUniqueEmailValidator;
 
 class Module implements 
     AutoloaderProviderInterface,
     ConfigProviderInterface,
     ServiceProviderInterface
 {
-    protected static $options;
-
-    public function init(ModuleManager $moduleManager)
-    {
-        $moduleManager->events()->attach('loadModules.post', array($this, 'modulesLoaded'));
-    }
 
     public function getAutoloaderConfig()
     {
@@ -34,6 +29,11 @@ class Module implements
         );
     }
 
+    public function getConfig($env = null)
+    {
+        return include __DIR__ . '/config/module.config.php';
+    }
+
     public function getServiceConfiguration()
     {
         return array(
@@ -41,6 +41,10 @@ class Module implements
                 'cdlitwostagesignup_ev_form' => 'CdliTwoStageSignup\Form\EmailVerification',
             ),
             'factories' => array(
+                'cdlitwostagesignup_module_options' => function($sm) {
+                    $config = $sm->get('Configuration');
+                    return new Options\ModuleOptions($config['cdli-twostagesignup']);
+                },
                 'cdlitwostagesignup_ev_validator' => function($sm) {
                     $obj = new Validator\AssertNoValidationInProgress();
                     $obj->setMapper($sm->get('cdlitwostagesignup_ev_modelmapper'));
@@ -49,7 +53,9 @@ class Module implements
                 },
                 'cdlitwostagesignup_ev_modelmapper' => function($sm) {
                     $obj = new Mapper\EmailVerification();
-                    $obj->setTableGateway($sm->get('cdlitwostagesignup_ev_tablegateway'));
+                    $obj->setDbAdapter($sm->get('zfcuser_zend_db_adapter'));
+                    $obj->setEntityPrototype(new Entity\EmailVerification());
+                    $obj->setHydrator(new  Mapper\EmailVerificationHydrator(false));
                     return $obj;
                 },
                 'cdlitwostagesignup_ev_tablegateway' => function($sm) {
@@ -64,11 +70,15 @@ class Module implements
                     $obj->setEmailVerificationMapper($sm->get('cdlitwostagesignup_ev_modelmapper'));
                     $obj->setMessageRenderer($sm->get('Zend\View\Renderer\PhpRenderer'));
                     $obj->setMessageTransport($sm->get('Zend\Mail\Transport\Sendmail'));
+                    $obj->setEmailMessageOptions($sm->get('cdlitwostagesignup_module_options'));
                     return $obj;
                 },
                 'cdlitwostagesignup_ev_filter' => function($sm) {
                     return new Form\EmailVerificationFilter(
-                        $sm->get('zfcuser_uemail_validator'),
+                        new ZfcUserUniqueEmailValidator(array(
+                            'mapper' => $sm->get('zfcuser_user_mapper'),
+                            'key'    => 'email'                            
+                        )),
                         $sm->get('cdlitwostagesignup_ev_validator')
                     );
                 },
@@ -79,25 +89,4 @@ class Module implements
         );
     }
 
-    public function getConfig($env = null)
-    {
-        return include __DIR__ . '/config/module.config.php';
-    }
-
-    public function modulesLoaded($e)
-    {
-        $config = $e->getConfigListener()->getMergedConfig();
-        static::$options = $config['cdli-twostagesignup'];
-    }
-
-    /**
-     * @TODO: Come up with a better way of handling module settings/options
-     */
-    public static function getOption($option)
-    {
-        if (!isset(static::$options[$option])) {
-            return null;
-        }
-        return static::$options[$option];
-    }
 }

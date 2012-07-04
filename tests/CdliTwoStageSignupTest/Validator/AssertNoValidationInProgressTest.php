@@ -2,14 +2,14 @@
 namespace CdliTwoStageSignupTest\Validator;
 
 use CdliTwoStageSignupTest\Framework\TestCase;
-use CdliTwoStageSignup\Model\EmailVerification as Model;
+use CdliTwoStageSignup\Entity\EmailVerification as Entity;
 use CdliTwoStageSignup\Validator\AssertNoValidationInProgress as SUT;
 
 class AssertNoValidationInProgressTest extends TestCase
 {
     public function setUp()
     {
-        $this->model = new Model();
+        $this->model = new Entity();
         $this->model->setEmailAddress('foo@bar.com');
 
         $this->validator = new SUT(array()); 

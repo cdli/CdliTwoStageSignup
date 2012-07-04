@@ -3,6 +3,7 @@
 use Zend\ServiceManager\ServiceManager;
 use Zend\Mvc\Service\ServiceManagerConfiguration;
 use CdliTwoStageSignupTest\Framework\TestCase;
+use CdliTwoStageSignupTest\Framework\TestCaseOptions;
 
 chdir(__DIR__);
 
@@ -33,6 +34,11 @@ $configuration['module_listener_options']['config_glob_paths'][] = __DIR__ . '/c
 // Setup service manager
 $serviceManager = new ServiceManager(new ServiceManagerConfiguration($configuration['service_manager']));
 $serviceManager->setService('ApplicationConfiguration', $configuration);
-$config = $serviceManager->get('Configuration');
+$serviceManager->get('ModuleManager')->loadModules();
+#$serviceManager->get('Application')->bootstrap();
 
 TestCase::setServiceLocator($serviceManager);
+
+$config = $serviceManager->get('Configuration');
+TestCase::setOptions(new TestCaseOptions($config['cdli-twostagesignup-test']));
+

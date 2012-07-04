@@ -3,7 +3,6 @@
 namespace CdliTwoStageSignupTest\Framework;
 
 use Zend\Db\Adapter\Adapter;
-use CdliTwoStageSignup\Module as modCTSS;
 
 class MapperTestCase extends TestCase
 {
@@ -18,12 +17,12 @@ class MapperTestCase extends TestCase
 
     protected function dbSchemaDown()
     {
-        $this->importSchema(__DIR__ . '/../../../data/' . modCTSS::getOption('test_database_schema_down'));
+        $this->importSchema(__DIR__ . '/../../../data/' . $this->getOptions()->getDatabaseSchemaDown());
     }
 
     protected function dbSchemaUp()
     {
-        $this->importSchema(__DIR__ . '/../../../data/' . modCTSS::getOption('test_database_schema_up'));
+        $this->importSchema(__DIR__ . '/../../../data/' . $this->getOptions()->getDatabaseSchemaUp());
     }
 
     protected function importSchema($file)

@@ -1,10 +1,8 @@
 <?php
 
-namespace CdliTwoStageSignup\Model;
+namespace CdliTwoStageSignup\Entity;
 
-use ZfcBase\Model\AbstractModel;
-
-class EmailVerification extends AbstractModel
+class EmailVerification
 {
     protected $requestKey;
     protected $emailAddress;
@@ -62,13 +60,5 @@ class EmailVerification extends AbstractModel
     {
         $expiryDate = new \DateTime('24 hours ago');
         return $this->getRequestTime() < $expiryDate;
-    }
-
-    /**
-     * @TODO
-     */
-    public function populate(array $rowData)
-    {
-        parent::populate($rowData);
     }
 }

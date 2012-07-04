@@ -3,7 +3,8 @@ namespace CdliTwoStageSignupTest\Service;
 
 use CdliTwoStageSignupTest\Framework\TestCase;
 use CdliTwoStageSignup\Service\EmailVerification as Service;
-use CdliTwoStageSignup\Model\EmailVerification as Model;
+use CdliTwoStageSignup\Entity\EmailVerification as Entity;
+use CdliTwoStageSignup\Options\ModuleOptions;
 
 class EmailVerificationTest extends TestCase
 {
@@ -14,11 +15,10 @@ class EmailVerificationTest extends TestCase
 
         date_default_timezone_set('GMT');
 
-        $this->model = new Model();
+        $this->model = new Entity();
         $this->model->setEmailAddress('foo@bar.com');
         $this->model->setRequestTime(new \DateTime('2001-01-01T01:01:01'));
         $this->model->generateRequestKey();
-
     }
 
     public function testFindByRequestKey()
@@ -85,13 +85,13 @@ class EmailVerificationTest extends TestCase
         $evrMapper = $this->getMock('CdliTwoStageSignup\Mapper\EmailVerification');
         $evrMapper->expects($this->once())
                   ->method('persist')
-                  ->with($this->isInstanceOf('CdliTwoStageSignup\Model\EmailVerification'))
+                  ->with($this->isInstanceOf('CdliTwoStageSignup\Entity\EmailVerification'))
                   ->will($this->returnValue(NULL));
 
         $service = new Service();
         $service->setEmailVerificationMapper($evrMapper);
         $result = $service->createFromForm($form);
-        $this->assertInstanceOf('CdliTwoStageSignup\Model\EmailVerification', $result);
+        $this->assertInstanceOf('CdliTwoStageSignup\Entity\EmailVerification', $result);
     }
 
     public function testSendVerificationEmailMessage()
@@ -105,6 +105,7 @@ class EmailVerificationTest extends TestCase
                      ->will($this->returnCallback(function($m) { 
                         return $m->record->getRequestKey() . ' ' . $m->record->getEmailAddress();
                      }));
+        $this->getServiceLocator()->setService('Zend\View\Renderer\PhpRenderer', $viewRenderer);
 
         $transport = $this->getMock('Zend\Mail\Transport\TransportInterface');
         $transport->expects($this->once())
@@ -113,8 +114,9 @@ class EmailVerificationTest extends TestCase
                   ->will($this->returnCallback(function($m) use (&$sentMessage) {
                       $sentMessage = $m;
                   }));
+        $this->getServiceLocator()->setService('Zend\Mail\Transport\TransportInterface', $transport);
 
-        $service = new Service();
+        $service = $this->getServiceLocator()->get('cdlitwostagesignup_ev_service');
         $service->setMessageRenderer($viewRenderer);
         $service->setMessageTransport($transport);
         $service->sendVerificationEmailMessage($this->model); 

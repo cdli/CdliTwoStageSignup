@@ -15,8 +15,10 @@ class EmailVerification extends ProvidesEventsForm
 
         $this->add(array(
             'name' => 'email',
-            'attributes' => array(
+            'options' => array(
                 'label' => 'Email Address',
+            ),
+            'attributes' => array(
                 'type' => 'text',
             ),
         ));
@@ -31,6 +33,6 @@ class EmailVerification extends ProvidesEventsForm
 
         $this->add(new Csrf('csrf'));
 
-        $this->events()->trigger('init', $this);
+        $this->getEventManager()->trigger('init', $this);
     }
 }
