@@ -55,7 +55,7 @@ class Module implements
                     $obj = new Mapper\EmailVerification();
                     $obj->setDbAdapter($sm->get('zfcuser_zend_db_adapter'));
                     $obj->setEntityPrototype(new Entity\EmailVerification());
-                    $obj->setHydrator(new  Mapper\EmailVerificationHydrator(false));
+                    $obj->setHydrator(new  Mapper\EmailVerificationHydrator());
                     return $obj;
                 },
                 'cdlitwostagesignup_ev_tablegateway' => function($sm) {

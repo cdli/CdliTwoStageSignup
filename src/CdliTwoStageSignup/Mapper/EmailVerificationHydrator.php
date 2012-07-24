@@ -16,14 +16,14 @@ class EmailVerificationHydrator extends ClassMethods
      */
     public function extract($object)
     {
-        if ($object instanceof \DateTime) {
-            return $object->format('Y-m-d H:i:s');
-        }
         if (!$object instanceof Entity) {
             throw new \InvalidArgumentException('$object must be an instance of EmailVerification entity');
         }
-        /* @var $object UserInterface*/
+        /* @var $object Entity*/
         $data = parent::extract($object);
+        if ( $data['request_time'] instanceof \DateTime ) {
+            $data['request_time'] = $data['request_time']->format('Y-m-d H:i:s');
+        }
         return $data;
     }
 
@@ -40,7 +40,9 @@ class EmailVerificationHydrator extends ClassMethods
         if (!$object instanceof Entity) {
             throw new \InvalidArgumentException('$object must be an instance of EmailVerification entity');
         }
-        $data['request_time'] = new \DateTime($data['request_time']);
+        if ( ! $data['request_time'] instanceof \DateTime ) {
+            $data['request_time'] = new \DateTime($data['request_time']);
+        }
         return parent::hydrate($data, $object);
     }
 
