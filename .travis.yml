@@ -10,7 +10,7 @@ env:
 
 before_script:
   - cd ..
-  - git clone git://github.com/zendframework/ZendSkeletonApplication.git --recursive
+  - git clone git://github.com/zendframework/ZendSkeletonApplication.git
   - cd ZendSkeletonApplication
   - cd vendor && mv ~/builds/cdli/CdliTwoStageSignup . && cd - >/dev/null
   - cp vendor/CdliTwoStageSignup/.travis/composer.json.dist composer.json
