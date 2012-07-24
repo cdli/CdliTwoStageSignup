@@ -1,7 +1,7 @@
 <?php
 
 use Zend\ServiceManager\ServiceManager;
-use Zend\Mvc\Service\ServiceManagerConfiguration;
+use Zend\Mvc\Service\ServiceManagerConfig;
 use CdliTwoStageSignupTest\Framework\TestCase;
 use CdliTwoStageSignupTest\Framework\TestCaseOptions;
 
@@ -32,10 +32,9 @@ $configuration = include 'config/application.config.php';
 $configuration['module_listener_options']['config_glob_paths'][] = __DIR__ . '/config/{,*.}{global,local}.php';
 
 // Setup service manager
-$serviceManager = new ServiceManager(new ServiceManagerConfiguration($configuration['service_manager']));
-$serviceManager->setService('ApplicationConfiguration', $configuration);
+$serviceManager = new ServiceManager(new ServiceManagerConfig(@$configuration['service_manager'] ?: array()));
+$serviceManager->setService('ApplicationConfig', $configuration);
 $serviceManager->get('ModuleManager')->loadModules();
-#$serviceManager->get('Application')->bootstrap();
 
 TestCase::setServiceLocator($serviceManager);
 
