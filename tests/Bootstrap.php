@@ -34,6 +34,7 @@ $configuration['module_listener_options']['config_glob_paths'][] = __DIR__ . '/c
 // Setup service manager
 $serviceManager = new ServiceManager(new ServiceManagerConfig(@$configuration['service_manager'] ?: array()));
 $serviceManager->setService('ApplicationConfig', $configuration);
+$serviceManager->setFactory('ServiceListener', 'Zend\Mvc\Service\ServiceListenerFactory');
 $serviceManager->get('ModuleManager')->loadModules();
 
 TestCase::setServiceLocator($serviceManager);
