@@ -14,6 +14,7 @@ before_script:
   - cd ZendSkeletonApplication
   - cd vendor && mv ~/builds/cdli/CdliTwoStageSignup . && cd - >/dev/null
   - cp vendor/CdliTwoStageSignup/.travis/composer.json.dist composer.json
+  - php ./composer.phar self-update
   - php ./composer.phar install
   - cp vendor/CdliTwoStageSignup/.travis/application.config.php config/
   - cp vendor/CdliTwoStageSignup/.travis/database_$DB.local.php config/autoload/
