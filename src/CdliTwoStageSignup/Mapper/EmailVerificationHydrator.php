@@ -21,7 +21,8 @@ class EmailVerificationHydrator extends ClassMethods
         }
         /* @var $object Entity*/
         $data = parent::extract($object);
-        if ( $data['request_time'] instanceof \DateTime ) {
+        unset($data['is_expired']);
+        if ( isset($data['request_time']) && $data['request_time'] instanceof \DateTime ) {
             $data['request_time'] = $data['request_time']->format('Y-m-d H:i:s');
         }
         return $data;
@@ -40,16 +41,9 @@ class EmailVerificationHydrator extends ClassMethods
         if (!$object instanceof Entity) {
             throw new \InvalidArgumentException('$object must be an instance of EmailVerification entity');
         }
-        if ( ! $data['request_time'] instanceof \DateTime ) {
+        if ( isset($data['request_time']) && ! $data['request_time'] instanceof \DateTime ) {
             $data['request_time'] = new \DateTime($data['request_time']);
         }
         return parent::hydrate($data, $object);
-    }
-
-    protected function mapField($keyFrom, $keyTo, array $array)
-    {
-        $array[$keyTo] = $array[$keyFrom];
-        unset($array[$keyFrom]);
-        return $array;
     }
 }
