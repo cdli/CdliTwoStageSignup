@@ -15,6 +15,7 @@ return array(
     'CdliTwoStageSignup\Mapper\EmailVerificationHydrator'               => __DIR__ . '/src/CdliTwoStageSignup/Mapper/EmailVerificationHydrator.php',
     'CdliTwoStageSignup\Mapper\EmailVerification\MapperInterface'       => __DIR__ . '/src/CdliTwoStageSignup/Mapper/EmailVerification/MapperInterface.php',
     'CdliTwoStageSignup\Mapper\EmailVerification\ZendDb'                => __DIR__ . '/src/CdliTwoStageSignup/Mapper/EmailVerification/ZendDb.php',
+    'CdliTwoStageSignup\Options\InfrastructureOptionsInterface'         => __DIR__ . '/src/CdliTwoStageSignup/Options/InfrastructureOptionsInterface.php',
     'CdliTwoStageSignup\Options\ModuleOptions'                          => __DIR__ . '/src/CdliTwoStageSignup/Options/ModuleOptions.php',
     'CdliTwoStageSignup\Options\EmailOptionsInterface'                  => __DIR__ . '/src/CdliTwoStageSignup/Options/EmailOptionsInterface.php',
     'CdliTwoStageSignup\Validator\AssertNoValidationInProgress'         => __DIR__ . '/src/CdliTwoStageSignup/Validator/AssertNoValidationInProgress.php',
