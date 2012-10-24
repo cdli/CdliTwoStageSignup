@@ -2,105 +2,129 @@
 
 namespace CdliTwoStageSignup\Controller;
 
-use Zend\Mvc\Controller\AbstractActionController,
-    Zend\Http\Response,
-    Zend\View\Model\ViewModel,
-    CdliTwoStageSignup\Form\EmailVerification as EvrForm,
-    CdliTwoStageSignup\Form\EmailVerificationFilter as EvrFilter,
-    CdliTwoStageSignup\Entity\EmailVerification as EvrModel,
-    CdliTwoStageSignup\Service\EmailVerification as EvrService;
+use Zend\Mvc\Controller\AbstractActionController;
+use Zend\Http\Response;
+use Zend\View\Model\ViewModel;
+use CdliTwoStageSignup\Form\EmailVerification as EvrForm;
+use CdliTwoStageSignup\Form\EmailVerificationFilter as EvrFilter;
+use CdliTwoStageSignup\Entity\EmailVerification as EvrModel;
+use CdliTwoStageSignup\Service\EmailVerification as EvrService;
+use ZfcUser\Options\ModuleOptions as ZfcUserOptions;
 
 class RegisterController extends AbstractActionController
 {
     protected $emailVerificationForm = NULL;
-    protected $emailVerificationFilter = NULL;
     protected $emailVerificationService = NULL;
+    protected $zfcUserOptions = NULL;
 
     public function emailVerificationAction()
     {
-        $this->getEmailVerificationService()->cleanExpiredVerificationRequests();
-
+        $service = $this->getEmailVerificationService();
         $form = $this->getEmailVerificationForm();
-        $form->setInputFilter($this->getEmailVerificationFilter());
-        if ( $this->getRequest()->isPost() )
-        {
-            $form->setData($this->getRequest()->getPost());
-            if ( $form->isValid() )
-            {
-                $service = $this->getEmailVerificationService();
-                $model = $service->createFromForm($form);
-                $service->sendVerificationEmailMessage($model);
 
-                $vm = new ViewModel(array('record' => $model));
-                $vm->setTemplate('cdli-twostagesignup/email-verification/sent');
-                return $vm;
-            }
+        $service->cleanExpiredVerificationRequests();
+
+        // Render the form page for rendering
+        $formViewModel = new ViewModel(array(
+            'form'               => $form,
+            'enableRegistration' => $this->getZfcUserOptions()->getEnableRegistration()
+        ));
+        $formViewModel->setTemplate('cdli-twostagesignup/email-verification/form');
+
+        // Process form submissions using the POST-Redirect-GET (PRG) plugin 
+        $prg = $this->prg($this->url()->fromRoute('zfcuser/register'), true);
+        if ($prg instanceof Response) {
+            return $prg;
+        } elseif ($prg === false) {
+            return $formViewModel;
         }
 
-        // Render the form
-        $vm = new ViewModel(array(
-            'form'               => $form,
-            'enableRegistration' => $this->getServiceLocator()->get('zfcuser_module_options')->getEnableRegistration()
-        ));
-        $vm->setTemplate('cdli-twostagesignup/email-verification/form');
+        // Attempt to process the form
+        $form->setData($prg);
+        $model = $service->createFromForm($form);
+        if (!$model) {
+            return $formViewModel;
+        }
+        $service->sendVerificationEmailMessage($model);
+
+        $vm = new ViewModel(array('record' => $model));
+        $vm->setTemplate('cdli-twostagesignup/email-verification/sent');
         return $vm;
     }
 
     public function checkTokenAction()
     {
-        $this->getEmailVerificationService()->cleanExpiredVerificationRequests();
+        $service = $this->getEmailVerificationService();
+        $events = $this->getServiceLocator()->get('SharedEventManager');
 
+        $service->cleanExpiredVerificationRequests();
+
+        // Pull and validate the Request Key
         $token = $this->plugin('params')->fromRoute('token');
         $validator = new \Zend\Validator\Hex();
-        if ( $validator->isValid($token) )
-        {
-            $model = $this->getEmailVerificationService()->findByRequestKey($token);
-            if ( $model instanceof EvrModel )
-            {
-                $locator = $this->getServiceLocator();
-                $formAction = $this->url()->fromRoute('zfcuser/register/step2', array('token'=>$model->getRequestKey()));
-
-                // Listen for the form's init event
-                $events = \Zend\EventManager\StaticEventManager::getInstance();
-                $events->attach('ZfcUser\Form\Register','init', function($e) use ($model) {
-                    $form = $e->getTarget();
-                    $form->get('email')->setLabel('')->setAttributes(array(
-                        'type' => 'hidden',
-                        'value' => $model->getEmailAddress(),
-                    ));
-                });
-
-                // Listen for registration completion and delete the email verification record
-                $service = $this->getEmailVerificationService();
-                $zfcServiceEvents = $locator->get('zfcuser_user_service')->getEventManager();
-                $zfcServiceEvents->attach('register', function($e) use ($service, $model) {
-                    $service->remove($model);
-                });
-
-                // Hook into existing form processing logic
-                $vm = $this->forward()->dispatch('zfcuser', array('action' => 'register'));
-                if ( $vm instanceof Response )
-                {
-                    $zfcUserAction = $this->url()->fromRoute('zfcuser/register');
-                    $stepTwoRoute = $this->url()->fromRoute('zfcuser/register/step2', array('token' => $token));
-
-                    // Intercept form validation failure redirects from ZfcUser
-                    $allHeaders = $this->getResponse()->getHeaders();
-                    $locationHeader = $allHeaders->get('Location');
-                    if ( $locationHeader->getUri() == $zfcUserAction ) {
-                        $locationHeader->setUri($stepTwoRoute);
-                    }
-                    return $vm;
-                }
-
-                // Defeat ZfcUser's attempt to render it's own view script
-                $vm->setVariable('formAction', $formAction);
-                $vm->setVariable('record', $model);
-                $vm->setTemplate('cdli-twostagesignup/register');
-                return $vm;
-            }
+        if ( !$validator->isValid($token) ) {
+            throw new \InvalidArgumentException('Invalid Token!');
         }
-        die('ERROR!');
+ 
+        // Find the request key in ze database
+        $model = $service->findByRequestKey($token);
+        if ( ! $model instanceof EvrModel ) {
+            throw new \InvalidArgumentException('Invalid Token!');
+        }
+
+        // Listen for registration completion and delete the email verification record if the
+        // user account was registered successfully
+        $events->attach('ZfcUser\Service\User', 'register.post', function($e) use ($service, $model) {
+            $user = $e->getParam('user');
+            if ($user instanceof \ZfcUser\Entity\UserInterface && !is_null($user->getID())) {
+                $service->remove($model);
+            }
+        });
+
+
+        // Ensure that the email address wasn't changed on the client side before POSTing
+        if ($this->getRequest()->isPost()) {
+            $this->getRequest()->getPost()->set('email', $model->getEmailAddress());
+        }
+
+        // Hook into existing form processing logic
+        $vm = $this->forward()->dispatch('zfcuser', array('action' => 'register'));
+        if ( $vm instanceof Response )
+        {
+            $zfcUserAction = $this->url()->fromRoute('zfcuser/register');
+            $stepTwoRoute = $this->url()->fromRoute('zfcuser/register/step2', array('token' => $token));
+
+            // Intercept form validation failure redirects from ZfcUser and change the URI
+            // to point to this controller action
+            $allHeaders = $this->getResponse()->getHeaders();
+            $locationHeader = $allHeaders->get('Location');
+            if ( $locationHeader->getUri() == $zfcUserAction ) {
+                $locationHeader->setUri($stepTwoRoute);
+            }
+            return $vm;
+        }
+
+        // Defeat ZfcUser's attempt to render it's own view script
+        // (necessary because it doesn't allow changing the form action)
+        $vm->setVariable('model', $model);
+        $vm->setTemplate('cdli-twostagesignup/register');
+        return $vm;
+
+    }
+
+    public function getZfcUserOptions()
+    {
+        if ($this->zfcUserOptions === null)
+        {
+            $this->zfcUserOptions = $this->getServiceLocator()->get('zfcuser_module_options');
+        }
+        return $this->zfcUserOptions;
+    }
+
+    public function setZfcUserOptions(ZfcUserOptions $o)
+    {
+        $this->zfcUserOptions = $o;
+        return $this;
     }
 
     public function getEmailVerificationForm()
@@ -115,21 +139,6 @@ class RegisterController extends AbstractActionController
     public function setEmailVerificationForm(EvrForm $emailVerificationForm)
     {
         $this->emailVerificationForm = $emailVerificationForm;
-        return $this;
-    }
-
-    public function getEmailVerificationFilter()
-    {
-        if ($this->emailVerificationFilter === null)
-        {
-            $this->emailVerificationFilter = $this->getServiceLocator()->get('cdlitwostagesignup_ev_filter');
-        }
-        return $this->emailVerificationFilter;
-    }
-
-    public function setEmailVerificationFilter(EvrFilter $emailVerificationFilter)
-    {
-        $this->emailVerificationFilter = $emailVerificationFilter;
         return $this;
     }
 
