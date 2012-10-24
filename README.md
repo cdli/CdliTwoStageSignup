@@ -1,6 +1,6 @@
 CdliTwoStageSignup
 ==================
-Version 0.6.1 Created by the Centre for Distance Learning and Innovation (www.cdli.ca)
+Version 0.7.0 Created by the Centre for Distance Learning and Innovation (www.cdli.ca)
 
 [![Build Status](https://secure.travis-ci.org/cdli/CdliTwoStageSignup.png?branch=master)](http://travis-ci.org/cdli/CdliTwoStageSignup)
 
