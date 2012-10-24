@@ -2,80 +2,48 @@
 namespace CdliTwoStageSignup\Mapper;
 
 use ZfcBase\Mapper\AbstractDbMapper;
-use CdliTwoStageSignup\Model\EmailVerification as Model;
+use CdliTwoStageSignup\Entity\EmailVerification as Model;
 use Zend\Db\Sql\Sql;
+use Zend\Stdlib\Hydrator\HydratorInterface;
 
 class EmailVerification extends AbstractDbMapper
 {
-    protected $tableName         = 'user_signup_email_verification';
-    protected $keyField          = 'request_key';
-    protected $emailField        = 'email_address';
-    protected $reqtimeField      = 'request_time';
-
-    public function remove($evrModel)
-    {
-        $sql = new Sql($this->getDbAdapter(), $this->tableName);
-        $delete= $sql->delete();
-        $delete->where->equalTo($this->keyField, $evrModel->getRequestKey());
-        $statement = $sql->prepareStatementForSqlObject($delete);
-        $statement->execute();
-        return true;
-    }
+    protected $tableName = 'user_signup_email_verification';
 
     public function findByEmail($email)
     {
-        $select = $this->select()
-                       ->from($this->tableName)
-                       ->where(array($this->emailField => $email));
-        return $this->selectWith($select)->current();
+        $select = $this->getSelect($this->tableName)->where(array('email_address' => $email));
+        $entity = $this->select($select)->current();
+        $this->getEventManager()->trigger('find', $this, array('entity' => $entity));
+        return $entity;
     }
 
     public function findByRequestKey($key)
     {
-        $select = $this->select()
-                       ->from($this->tableName)
-                       ->where(array($this->keyField => $key));
-        return $this->selectWith($select)->current();
+        $select = $this->getSelect($this->tableName)->where(array('request_key' => $key));
+        return $this->select($select)->current();
     }
 
     public function cleanExpiredVerificationRequests($expiryTime=86400)
     {
         $now = new \DateTime((int)$expiryTime . ' seconds ago');
 
-        $sql = new Sql($this->getDbAdapter(), $this->tableName);
-        $delete = $sql->delete();
-        $delete ->where->lessThanOrEqualTo($this->reqtimeField, $now->format('Y-m-d H:i:s'));
-        $statement = $sql->prepareStatementForSqlObject($delete);
+        $delete = $this->getSql()->delete($this->tableName);
+        $delete->where->lessThanOrEqualTo('request_time', $now->format('Y-m-d H:i:s'));
+        $statement = $this->getSql()->prepareStatementForSqlObject($delete);
         $statement->execute();
         return true; 
     }
 
-    protected function fromRow($row)
+    public function insert($entity, $tableName = null, HydratorInterface $hydrator = null)
     {
-        if (!$row) return false;
-        $evr = Model::fromArray($row->getArrayCopy());
-        return $evr;
+        $result = parent::insert($entity, $tableName, $hydrator);
+        return $result;
     }
 
-    public function toScalarValueArray($evrModel)
+    public function remove(Model $evrModel)
     {
-        return new \ArrayObject(array(
-            $this->keyField      => $evrModel->getRequestKey(),
-            $this->emailField    => $evrModel->getEmailAddress(),
-            $this->reqtimeField  => $evrModel->getRequestTime()->format('Y-m-d H:i:s'),
-        ));
+        $this->delete(array('request_key' => $evrModel->getRequestKey()));
+        return true;
     }
-
-    /**
-     * @todo
-     */
-    public function persist($evrModel)
-    {
-        return parent::insert($evrModel);
-    }
-
-    public function getTableName() { return $this->tableName; }
-    public function getPrimaryKey() { $this->keyField; }
-    public function getPaginatorAdapter(array $params) { }
-    public function getClassName() { return 'CdliTwoStageSignup\Model\EmailVerification'; }
 }
