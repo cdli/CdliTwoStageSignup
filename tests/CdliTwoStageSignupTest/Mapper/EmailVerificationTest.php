@@ -4,6 +4,7 @@ namespace CdliTwoStageSignupTest\Mapper;
 use CdliTwoStageSignupTest\Framework\MapperTestCase;
 use CdliTwoStageSignup\Entity\EmailVerification as Entity;
 use Zend\Db\Adapter\Adapter as DbAdapter;
+use Zend\ServiceManager\ServiceManager;
 
 class EmailVerificationTest extends MapperTestCase
 {
@@ -11,6 +12,13 @@ class EmailVerificationTest extends MapperTestCase
     public function setUp()
     {
         parent::setUp();
+
+        // Override the selected backend adapter
+        $sl = $this->getServiceLocator();
+        if ($sl instanceof ServiceManager) {
+            $sl->setAllowOverride(true);
+            $sl->setAlias('cdlitwostagesignup_ev_modelmapper', 'cdlitwostagesignup_ev_modelmapper_zenddb');
+        }
 
         date_default_timezone_set('GMT');
 
