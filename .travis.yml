@@ -17,8 +17,8 @@ before_script:
   - php ./composer.phar install
   - cp vendor/CdliTwoStageSignup/.travis/application.config.php config/
   - cp vendor/CdliTwoStageSignup/.travis/database_$DB.local.php config/autoload/
-  - cp vendor/CdliTwoStageSignup/.travis/module.zfcuser.local.php config/autoload/
-  - cp vendor/CdliTwoStageSignup/.travis/module.cdlitwostagesignup.local.php config/autoload/
+  - cp vendor/CdliTwoStageSignup/.travis/zfcuser.local.php config/autoload/
+  - cp vendor/CdliTwoStageSignup/.travis/cdlitwostagesignup.local.php config/autoload/
   - cp vendor/CdliTwoStageSignup/tests/phpunit.xml.dist vendor/CdliTwoStageSignup/tests/phpunit.xml
   - if [[ "$DB" == "mysql" ]]; then mysql -uroot -e 'create database travis_test'; fi
 
