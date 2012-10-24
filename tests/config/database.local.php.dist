@@ -1,7 +1,7 @@
 <?php
 
 return array(
-    'cdli-twostagesignup' => array(
+    'cdli-twostagesignup-test' => array(
         'test_database_schema_up'   => 'schema_up.sqlite.sql',
         'test_database_schema_down' => 'schema_down.sql',
     ),
