@@ -40,12 +40,12 @@ return array(
                             'step2' => array(
                                 'type' => 'Regex',
                                 'options' => array(
-                                    'regex' => '/step2/token/(?<token>[A-F0-9]+)',
+                                    'regex' => '/step2/(?<token>[A-F0-9]+)',
                                     'defaults' => array(
                                         'controller' => 'cdlitwostagesignup_ev_controller',
                                         'action'     => 'check-token',
                                     ),
-                                    'spec' => '/step2/token/%token%',
+                                    'spec' => '/step2/%token%',
                                 ),
                             ),
                         ),

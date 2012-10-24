@@ -14,7 +14,7 @@ class EmailVerification extends ProvidesEventsForm
         parent::__construct();
 
         $this->add(array(
-            'name' => 'email',
+            'name' => 'email_address',
             'options' => array(
                 'label' => 'Email Address',
             ),

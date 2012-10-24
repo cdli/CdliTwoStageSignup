@@ -24,7 +24,7 @@ class EmailVerificationTest extends MapperTestCase
 
     public function testPersist()
     {
-        $this->mapper->persist($this->model);
+        $this->mapper->insert($this->model);
 
         // Find the inserted record and verify it was created properly
         $result = $this->_queryFindByRequestKey($this->model->getRequestKey());
@@ -66,13 +66,12 @@ class EmailVerificationTest extends MapperTestCase
         $m = new Entity();
         $m->setEmailAddress('bar@baz.com');
         $m->generateRequestKey();
-        $this->mapper->persist($m);
+        $this->mapper->insert($m);
 
         $this->mapper->cleanExpiredVerificationRequests();
 
         $set = $this->db->query('SELECT * FROM '.$this->db->platform->quoteIdentifier('user_signup_email_verification'))->execute();
-        # @TODO Count with PDO Sqlite appears to be broken (always zero)
-        #$this->assertEquals(1, $set->count());
+        $this->assertEquals(1, $set->count());
         $actualEntity = $set->current();
         $this->assertEquals($m->getRequestKey(), $actualEntity['request_key']);
         $this->assertEquals($m->getEmailAddress(), $actualEntity['email_address']);

@@ -37,9 +37,6 @@ class Module implements
     public function getServiceConfig()
     {
         return array(
-            'invokables' => array(
-                'cdlitwostagesignup_ev_form' => 'CdliTwoStageSignup\Form\EmailVerification',
-            ),
             'factories' => array(
                 'cdlitwostagesignup_module_options' => function($sm) {
                     $config = $sm->get('Configuration');
@@ -68,9 +65,16 @@ class Module implements
                 'cdlitwostagesignup_ev_service' => function($sm) {
                     $obj = new Service\EmailVerification();
                     $obj->setEmailVerificationMapper($sm->get('cdlitwostagesignup_ev_modelmapper'));
+                    $obj->setEmailVerificationForm($sm->get('cdlitwostagesignup_ev_form'));
                     $obj->setMessageRenderer($sm->get('Zend\View\Renderer\PhpRenderer'));
                     $obj->setMessageTransport($sm->get('Zend\Mail\Transport\Sendmail'));
                     $obj->setEmailMessageOptions($sm->get('cdlitwostagesignup_module_options'));
+                    return $obj;
+                },
+                'cdlitwostagesignup_ev_form' => function($sm) {
+                    $obj = new Form\EmailVerification();
+                    $obj->setHydrator(new Mapper\EmailVerificationHydrator());
+                    $obj->setInputFilter($sm->get('cdlitwostagesignup_ev_filter'));
                     return $obj;
                 },
                 'cdlitwostagesignup_ev_filter' => function($sm) {
