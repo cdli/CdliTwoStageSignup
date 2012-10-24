@@ -8,6 +8,7 @@ use Zend\ModuleManager\ModuleManager,
     Zend\ModuleManager\Feature\ConfigProviderInterface,
     Zend\ModuleManager\Feature\ServiceProviderInterface,
     ZfcUser\Validator\NoRecordExists as ZfcUserUniqueEmailValidator;
+use Doctrine\ORM\Mapping\Driver\XmlDriver;
 
 class Module implements 
     AutoloaderProviderInterface,
@@ -53,6 +54,18 @@ class Module implements
                     $obj->setDbAdapter($sm->get('zfcuser_zend_db_adapter'));
                     $obj->setEntityPrototype(new Entity\EmailVerification());
                     $obj->setHydrator(new  Mapper\EmailVerificationHydrator());
+                    return $obj;
+                },
+                'cdlitwostagesignup_ev_modelmapper_doctrineorm' => function($sm) {
+                    // Add Entity driver
+                    $chain = $sm->get('doctrine.driver.orm_default');
+                    $chain->addDriver(new XmlDriver(__DIR__ . '/config/xml/cdlitwostagesignup-doctrineorm'), 'CdliTwoStageSignup\Entity');
+
+                    // Create instance of Doctrine ORM mapper
+                    $obj = new Mapper\EmailVerification\DoctrineORM(
+                        $sm->get('zfcuser_doctrine_em'),
+                        $sm->get('cdlitwostagesignup_module_options')
+                    );
                     return $obj;
                 },
                 'cdlitwostagesignup_ev_tablegateway' => function($sm) {
