@@ -1,5 +1,7 @@
 <?php
 return array(
+    'cdli-twostagesignup' => array(),
+
     'view_manager' => array(
         'template_path_stack' => array(
             'cdlitwostagesignup' => __DIR__ . '/../view',
