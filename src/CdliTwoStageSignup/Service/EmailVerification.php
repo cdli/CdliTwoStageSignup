@@ -2,15 +2,15 @@
 
 namespace CdliTwoStageSignup\Service;
 
-use Zend\Form\Form,
-    Zend\EventManager\ListenerAggregate,
-    ZfcBase\EventManager\EventProvider,
-    CdliTwoStageSignup\Entity\EmailVerification as Model,
-    CdliTwoStageSignup\Mapper\EmailVerification as EvrMapper,
-    Zend\Mail\Message as EmailMessage,
-    Zend\Mail\Transport\TransportInterface as EmailTransport,
-    Zend\View\Model\ViewModel,
-    Zend\View\Renderer\RendererInterface as ViewRenderer;
+use Zend\Form\Form;
+use Zend\EventManager\ListenerAggregate;
+use ZfcBase\EventManager\EventProvider;
+use CdliTwoStageSignup\Entity\EmailVerification as Model;
+use CdliTwoStageSignup\Mapper\EmailVerification\MapperInterface as EvrMapper;
+use Zend\Mail\Message as EmailMessage;
+use Zend\Mail\Transport\TransportInterface as EmailTransport;
+use Zend\View\Model\ViewModel;
+use Zend\View\Renderer\RendererInterface as ViewRenderer;
 use CdliTwoStageSignup\Options\EmailOptionsInterface;
 use CdliTwoStageSignup\Form\EmailVerification as EvrForm;
 

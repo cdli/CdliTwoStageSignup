@@ -2,7 +2,6 @@
 namespace CdliTwoStageSignupTest\Mapper;
 
 use CdliTwoStageSignupTest\Framework\MapperTestCase;
-use CdliTwoStageSignup\Mapper\EmailVerification as Mapper;
 use CdliTwoStageSignup\Entity\EmailVerification as Entity;
 use Zend\Db\Adapter\Adapter as DbAdapter;
 

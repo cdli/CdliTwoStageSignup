@@ -48,8 +48,8 @@ class Module implements
                     $obj->setOptions(array('key' => 'email_address'));
                     return $obj;
                 },
-                'cdlitwostagesignup_ev_modelmapper' => function($sm) {
-                    $obj = new Mapper\EmailVerification();
+                'cdlitwostagesignup_ev_modelmapper_zenddb' => function($sm) {
+                    $obj = new Mapper\EmailVerification\ZendDb();
                     $obj->setDbAdapter($sm->get('zfcuser_zend_db_adapter'));
                     $obj->setEntityPrototype(new Entity\EmailVerification());
                     $obj->setHydrator(new  Mapper\EmailVerificationHydrator());

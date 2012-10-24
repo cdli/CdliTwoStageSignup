@@ -1,12 +1,12 @@
 <?php
-namespace CdliTwoStageSignup\Mapper;
+namespace CdliTwoStageSignup\Mapper\EmailVerification;
 
 use ZfcBase\Mapper\AbstractDbMapper;
 use CdliTwoStageSignup\Entity\EmailVerification as Model;
 use Zend\Db\Sql\Sql;
 use Zend\Stdlib\Hydrator\HydratorInterface;
 
-class EmailVerification extends AbstractDbMapper
+class ZendDb implements MapperInterface extends AbstractDbMapper
 {
     protected $tableName = 'user_signup_email_verification';
 
