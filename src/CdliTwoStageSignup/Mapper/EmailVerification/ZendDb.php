@@ -6,7 +6,7 @@ use CdliTwoStageSignup\Entity\EmailVerification as Model;
 use Zend\Db\Sql\Sql;
 use Zend\Stdlib\Hydrator\HydratorInterface;
 
-class ZendDb implements MapperInterface extends AbstractDbMapper
+class ZendDb extends AbstractDbMapper implements MapperInterface
 {
     protected $tableName = 'user_signup_email_verification';
 
