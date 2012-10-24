@@ -6,17 +6,18 @@ use Zend\Form\Form,
     Zend\EventManager\ListenerAggregate,
     ZfcBase\EventManager\EventProvider,
     CdliTwoStageSignup\Entity\EmailVerification as Model,
-    CdliTwoStageSignup\Mapper\EmailVerification as ModelMapper,
+    CdliTwoStageSignup\Mapper\EmailVerification as EvrMapper,
     Zend\Mail\Message as EmailMessage,
     Zend\Mail\Transport\TransportInterface as EmailTransport,
     Zend\View\Model\ViewModel,
     Zend\View\Renderer\RendererInterface as ViewRenderer;
 use CdliTwoStageSignup\Options\EmailOptionsInterface;
+use CdliTwoStageSignup\Form\EmailVerification as EvrForm;
 
 class EmailVerification extends EventProvider
 {
     /**
-     * @var ModelMapper
+     * @var EvrMapper
      */
     protected $evrMapper;
     protected $serviceLocator;
@@ -52,14 +53,15 @@ class EmailVerification extends EventProvider
      */
     public function createFromForm(Form $form)
     {
-        $data = $form->getData();
+        $form->bind(new Model());
+        if (!$form->isValid()) {
+            return false;
+        }
 
-        $model = new Model();
-        $model->setEmailAddress($data['email']);
-        $model->setRequestTime(new \DateTime('now'));
+        $model = $form->getData();
         $model->generateRequestKey();
         $this->getEventManager()->trigger(__FUNCTION__, $this, array('record' => $model, 'form' => $form));
-        $this->getEmailVerificationMapper()->persist($model);
+        $this->getEmailVerificationMapper()->insert($model);
         return $model;
     }
 
@@ -83,10 +85,10 @@ class EmailVerification extends EventProvider
     /**
      * setEmailVerificationMapper
      *
-     * @param ModelMapper $evrMapper
+     * @param EvrMapper $evrMapper
      * @return User
      */
-    public function setEmailVerificationMapper(ModelMapper $evrMapper)
+    public function setEmailVerificationMapper(EvrMapper $evrMapper)
     {
         $this->evrMapper = $evrMapper;
         return $this;
@@ -95,6 +97,17 @@ class EmailVerification extends EventProvider
     public function getEmailVerificationMapper()
     {
         return $this->evrMapper;
+    }
+
+    public function setEmailVerificationForm(EvrForm $f)
+    {
+        $this->evrForm = $f;
+        return $this;
+    }
+
+    public function getEmailVerificationForm()
+    {
+        return $this->evrForm;
     }
 
     public function setMessageRenderer(ViewRenderer $emailRenderer)
