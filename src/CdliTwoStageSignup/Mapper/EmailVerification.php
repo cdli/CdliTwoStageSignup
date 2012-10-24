@@ -26,13 +26,11 @@ class EmailVerification extends AbstractDbMapper
 
     public function cleanExpiredVerificationRequests($expiryTime=86400)
     {
-        $now = new \DateTime((int)$expiryTime . ' seconds ago');
-
-        $delete = $this->getSql()->delete($this->tableName);
-        $delete->where->lessThanOrEqualTo('request_time', $now->format('Y-m-d H:i:s'));
-        $statement = $this->getSql()->prepareStatementForSqlObject($delete);
-        $statement->execute();
-        return true; 
+        $delete = $this->delete(function($where) use ($expiryTime) {
+            $now = new \DateTime((int)$expiryTime . ' seconds ago');
+            $where->lessThanOrEqualTo('request_time', $now->format('Y-m-d H:i:s'));
+        });
+        return $delete->count(); 
     }
 
     public function insert($entity, $tableName = null, HydratorInterface $hydrator = null)
