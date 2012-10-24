@@ -47,9 +47,9 @@ git clone git://github.com/cdli/CdliTwoStageSignup.git;
     * ZfcUser
     * CdliTwoStageSignup
 3. Import the SQL schema located in `./vendor/CdliTwoStageSignup/data/schema_up.mysql.sql`.
-4. Copy `./vendor/CdliTwoStageSignup/config/module.cdlitwostagesignup.php.dist` to
-   `./config/autoload/module.cdlitwostagesignup.global.php`.
-5. Fill in the required configuration variable values in  `./config/autoload/module.cdlitwostagesignup.global.php` 
+4. Copy `./vendor/CdliTwoStageSignup/config/cdlitwostagesignup.global.php.dist` to
+   `./config/autoload/cdlitwostagesignup.global.php`.
+5. Fill in the required configuration variable values in  `./config/autoload/cdlitwostagesignup.global.php` 
 
 
 DISCLAIMER
