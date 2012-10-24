@@ -1,6 +1,6 @@
 {
-    "name": "cdli/CdliTwoStageSignup",
-    "description": "Two-stage signup process for ZfcUser",
+    "name": "cdli/two-stage-signup",
+    "description": "Two-stage signup (Email Verification) process for ZfcUser",
     "version": "0.4.0",
     "type": "library",
     "license": "BSD-3-Clause",
@@ -16,8 +16,12 @@
         }
     ],
     "require": {
-        "zendframework/zendframework": "dev-master",
+        "zendframework/zendframework": "2.*",
+        "zf-commons/zfc-base": "dev-master",
         "zf-commons/zfc-user": "dev-master"
+    },
+    "replace": {
+        "cdli/CdliTwoStageSignup" : "self.version"
     },
     "autoload": {
         "psr-0": {
