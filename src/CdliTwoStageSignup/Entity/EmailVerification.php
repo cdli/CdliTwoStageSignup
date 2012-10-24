@@ -4,19 +4,19 @@ namespace CdliTwoStageSignup\Entity;
 
 class EmailVerification
 {
-    protected $requestKey;
-    protected $emailAddress;
-    protected $requestTime;
+    protected $request_key;
+    protected $email_address;
+    protected $request_time;
 
     public function setRequestKey($key)
     {
-        $this->requestKey = $key;
+        $this->request_key = $key;
         return $this;
     }
 
     public function getRequestKey()
     {
-        return $this->requestKey;
+        return $this->request_key;
     }
 
     public function generateRequestKey()
@@ -30,13 +30,13 @@ class EmailVerification
 
     public function setEmailAddress($email)
     {
-        $this->emailAddress = $email;
+        $this->email_address = $email;
         return $this;
     }
 
     public function getEmailAddress()
     {
-        return $this->emailAddress;
+        return $this->email_address;
     }
 
     public function setRequestTime($time)
@@ -44,16 +44,16 @@ class EmailVerification
         if ( ! $time instanceof \DateTime ) {
             $time = new \DateTime($time);
         }
-        $this->requestTime = $time;
+        $this->request_time = $time;
         return $this;
     }
 
     public function getRequestTime()
     {
-        if ( ! $this->requestTime instanceof \DateTime ) {
-            $this->requestTime = new \DateTime('now');
+        if ( ! $this->request_time instanceof \DateTime ) {
+            $this->request_time = new \DateTime('now');
         }
-        return $this->requestTime;
+        return $this->request_time;
     }
 
     public function isExpired()

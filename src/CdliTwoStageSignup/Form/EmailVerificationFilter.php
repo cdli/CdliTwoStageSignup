@@ -29,7 +29,7 @@ class EmailVerificationFilter extends InputFilter
         $this->setUniqueRegistrationSessionValidator($uniqueRegistrationSessionValidator);
 
         $this->add(array(
-            'name'       => 'email',
+            'name'       => 'email_address',
             'required'   => true,
             'validators' => array(
                 array( 'name' => 'EmailAddress' ),
