@@ -10,7 +10,6 @@ class DoctrineORMMapperTestCase extends TestCase
     public function setUp()
     {
         parent::setUp();
-        $this->db = $this->getServiceLocator()->get('Zend\Db\Adapter\Adapter');
         $this->dbSchemaDown();
         $this->dbSchemaUp();
     }
@@ -27,13 +26,32 @@ class DoctrineORMMapperTestCase extends TestCase
 
     protected function importSchema($file)
     {
+        $conn = $this->getDBALConnection();
         $sqlfile = explode(';',file_get_contents($file));
         foreach ( $sqlfile as $sqlStmt ) {
             $sqlStmt = trim($sqlStmt);
             if ( !empty($sqlStmt) ) {
-                $this->db->query($sqlStmt)->execute();
+                $conn->executeQuery($sqlStmt);
             }
         }
+    }
+
+    protected $em;
+    protected function getEntityManager()
+    {
+        if (is_null($this->em)) {
+            $this->em = $this->getServiceLocator()->get('zfcuser_doctrine_em');
+        }
+        return $this->em;
+    }
+
+    protected $conn;
+    protected function getDBALConnection()
+    {
+        if (is_null($this->conn)) {
+            $this->conn = $this->getEntityManager()->getConnection();
+        }
+        return $this->conn;
     }
 
 }

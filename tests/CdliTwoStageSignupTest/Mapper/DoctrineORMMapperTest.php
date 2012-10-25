@@ -38,20 +38,21 @@ class DoctrineORMMapperTest extends DoctrineORMMapperTestCase
 
         // Find the inserted record and verify it was created properly
         $result = $this->_queryFindByRequestKey($this->model->getRequestKey());
-        $this->assertInternalType('array', $result);
-        $this->assertEquals($this->model->getRequestKey(), $result['request_key']);
-        $this->assertEquals($this->model->getEmailAddress(), $result['email_address']);
-        $this->assertEquals($this->model->getRequestTime()->format('Y-m-d H:i:s'), $result['request_time']);
+        $this->assertInstanceOf('CdliTwoStageSignup\Entity\EmailVerification', $result);
+        $this->assertEquals($this->model->getRequestKey(), $result->getRequestKey());
+        $this->assertEquals($this->model->getEmailAddress(), $result->getEmailAddress());
+        $this->assertEquals($this->model->getRequestTime(), $result->getRequestTime());
     }
 
     public function testRemove()
     {
         $this->importSchema(__DIR__ . '/_files/singlerecord.sql');
-        $model = $this->mapper->remove($this->model);
+        $model = $this->_queryFindByRequestKey('DCE2D890895CF02');
+        $model = $this->mapper->remove($model);
 
         // Verify that it was removed
         $result = $this->_queryFindByRequestKey($this->model->getRequestKey());
-        $this->assertFalse($result);
+        $this->assertNull($result);
     }
 
     public function testFindByEmail()
@@ -80,9 +81,9 @@ class DoctrineORMMapperTest extends DoctrineORMMapperTestCase
 
         $this->mapper->cleanExpiredVerificationRequests();
 
-        $set = $this->db->query('SELECT * FROM '.$this->db->platform->quoteIdentifier('user_signup_email_verification'))->execute();
-        $this->assertEquals(1, $set->count());
-        $actualEntity = $set->current();
+        $set = $this->getDBALConnection()->executeQuery('SELECT * FROM user_signup_email_verification')->fetchAll();
+        $this->assertEquals(1, count($set));
+        $actualEntity = array_pop($set);
         $this->assertEquals($m->getRequestKey(), $actualEntity['request_key']);
         $this->assertEquals($m->getEmailAddress(), $actualEntity['email_address']);
         $this->assertEquals($m->getRequestTime()->format('Y-m-d H:i:s'), $actualEntity['request_time']);
@@ -90,9 +91,8 @@ class DoctrineORMMapperTest extends DoctrineORMMapperTestCase
 
     protected function _queryFindByRequestKey($key)
     {
-        $stmt = $this->db->query('SELECT * FROM '.$this->db->platform->quoteIdentifier('user_signup_email_verification').' WHERE request_key = ' . $this->db->driver->formatParameterName('id'));
-        $results = $stmt->execute(array('id'=>$key));
-        return $results->current();
+        $repo = $this->em->getRepository('CdliTwoStageSignup\Entity\EmailVerification');
+        return $repo->findOneBy(array('request_key' => $key));
     }
 
 }
