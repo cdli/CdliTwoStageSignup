@@ -77,8 +77,8 @@ class Module implements
                 },
                 'cdlitwostagesignup_ev_service' => function($sm) {
                     $obj = new Service\EmailVerification();
+                    $obj->setServiceLocator($sm);
                     $obj->setEmailVerificationMapper($sm->get('cdlitwostagesignup_ev_modelmapper'));
-                    $obj->setEmailVerificationForm($sm->get('cdlitwostagesignup_ev_form'));
                     $obj->setMessageRenderer($sm->get('Zend\View\Renderer\PhpRenderer'));
                     $obj->setMessageTransport($sm->get('Zend\Mail\Transport\Sendmail'));
                     $obj->setEmailMessageOptions($sm->get('cdlitwostagesignup_module_options'));
