@@ -12,6 +12,10 @@ class DoctrineORMMapperTest extends DoctrineORMMapperTestCase
     {
         parent::setUp();
 
+        if (!$this->getOptions()->getEnableDoctrineOrmTests()) {
+            $this->markTestSkipped('Doctrine ORM mapper tests are disabled');
+        }
+
         // Override the selected backend adapter
         $sl = $this->getServiceLocator();
         if ($sl instanceof ServiceManager) {

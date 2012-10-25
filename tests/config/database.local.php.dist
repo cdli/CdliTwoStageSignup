@@ -2,8 +2,10 @@
 
 return array(
     'cdli-twostagesignup-test' => array(
-        'database_schema_up'   => 'schema_up.sqlite.sql',
-        'database_schema_down' => 'schema_down.sql',
+        'database_schema_up'          => 'schema_up.sqlite.sql',
+        'database_schema_down'        => 'schema_down.sql',
+        'enable_zend_db_tests'        => true,
+        'enable_doctrine_orm_tests'   => false,
     ),
     'service_manager' => array(
         'factories' => array(

@@ -13,6 +13,10 @@ class ZendDbMapperTest extends ZendDbMapperTestCase
     {
         parent::setUp();
 
+        if (!$this->getOptions()->getEnableZendDbTests()) {
+            $this->markTestSkipped('Zend\Db mapper tests are disabled');
+        }
+
         // Override the selected backend adapter
         $sl = $this->getServiceLocator();
         if ($sl instanceof ServiceManager) {
