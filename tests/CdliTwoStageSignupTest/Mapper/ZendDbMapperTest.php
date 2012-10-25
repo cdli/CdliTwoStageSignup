@@ -1,12 +1,12 @@
 <?php
 namespace CdliTwoStageSignupTest\Mapper;
 
-use CdliTwoStageSignupTest\Framework\MapperTestCase;
+use CdliTwoStageSignupTest\Framework\ZendDbMapperTestCase;
 use CdliTwoStageSignup\Entity\EmailVerification as Entity;
 use Zend\Db\Adapter\Adapter as DbAdapter;
 use Zend\ServiceManager\ServiceManager;
 
-class EmailVerificationTest extends MapperTestCase
+class ZendDbMapperTest extends ZendDbMapperTestCase
 {
 
     public function setUp()
