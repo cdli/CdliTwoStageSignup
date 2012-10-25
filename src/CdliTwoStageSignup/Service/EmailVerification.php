@@ -2,17 +2,18 @@
 
 namespace CdliTwoStageSignup\Service;
 
-use Zend\Form\Form,
-    Zend\EventManager\ListenerAggregate,
-    ZfcBase\EventManager\EventProvider,
-    CdliTwoStageSignup\Entity\EmailVerification as Model,
-    CdliTwoStageSignup\Mapper\EmailVerification as EvrMapper,
-    Zend\Mail\Message as EmailMessage,
-    Zend\Mail\Transport\TransportInterface as EmailTransport,
-    Zend\View\Model\ViewModel,
-    Zend\View\Renderer\RendererInterface as ViewRenderer;
+use Zend\Form\Form;
+use Zend\EventManager\ListenerAggregate;
+use ZfcBase\EventManager\EventProvider;
+use CdliTwoStageSignup\Entity\EmailVerification as Model;
+use CdliTwoStageSignup\Mapper\EmailVerification\MapperInterface as EvrMapper;
+use Zend\Mail\Message as EmailMessage;
+use Zend\Mail\Transport\TransportInterface as EmailTransport;
+use Zend\View\Model\ViewModel;
+use Zend\View\Renderer\RendererInterface as ViewRenderer;
 use CdliTwoStageSignup\Options\EmailOptionsInterface;
 use CdliTwoStageSignup\Form\EmailVerification as EvrForm;
+use Zend\ServiceManager\ServiceLocatorInterface;
 
 class EmailVerification extends EventProvider
 {
@@ -24,6 +25,7 @@ class EmailVerification extends EventProvider
     protected $emailMessageOptions;
     protected $emailRenderer;
     protected $emailTransport;
+    protected $locator;
 
     public function findByRequestKey($token)
     {
@@ -107,6 +109,9 @@ class EmailVerification extends EventProvider
 
     public function getEmailVerificationForm()
     {
+        if (is_null($this->evrForm)) {
+            $this->evrForm = $this->getServiceLocator()->get('cdlitwostagesignup_ev_form');
+        }
         return $this->evrForm;
     }
 
@@ -133,5 +138,14 @@ class EmailVerification extends EventProvider
         return $this;
     }
 
+    public function setServiceLocator(ServiceLocatorInterface $sl)
+    {
+        $this->locator = $sl;
+        return $this;
+    }
 
+    public function getServiceLocator()
+    {
+        return $this->locator;
+    }
 }

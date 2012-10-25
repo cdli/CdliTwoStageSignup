@@ -8,6 +8,14 @@
 $settings = array(
 
     /**
+     * Backend storage adapter to use
+     *
+     * Options: ZendDb, DoctrineORM
+     * Default: ZendDb
+     */
+    'storage_adapter' => 'ZendDb',
+
+    /**
      * Email Address that will appear in the 'From' of outbound emails
      *
      * Default: empty
@@ -30,4 +38,9 @@ $settings = array(
  */
 return array(
     'cdli-twostagesignup' => $settings,
+    'service_manager' => array(
+        'aliases' => array(
+            'cdlitwostagesignup_ev_modelmapper' => 'cdlitwostagesignup_ev_modelmapper_' . $settings['storage_adapter']
+        ),
+    ),
 );

@@ -4,7 +4,7 @@ namespace CdliTwoStageSignupTest\Framework;
 
 use Zend\Db\Adapter\Adapter;
 
-class MapperTestCase extends TestCase
+class ZendDbMapperTestCase extends TestCase
 {
 
     public function setUp()

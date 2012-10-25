@@ -8,6 +8,7 @@ use Zend\ModuleManager\ModuleManager,
     Zend\ModuleManager\Feature\ConfigProviderInterface,
     Zend\ModuleManager\Feature\ServiceProviderInterface,
     ZfcUser\Validator\NoRecordExists as ZfcUserUniqueEmailValidator;
+use Doctrine\ORM\Mapping\Driver\XmlDriver;
 
 class Module implements 
     AutoloaderProviderInterface,
@@ -48,11 +49,23 @@ class Module implements
                     $obj->setOptions(array('key' => 'email_address'));
                     return $obj;
                 },
-                'cdlitwostagesignup_ev_modelmapper' => function($sm) {
-                    $obj = new Mapper\EmailVerification();
+                'cdlitwostagesignup_ev_modelmapper_zenddb' => function($sm) {
+                    $obj = new Mapper\EmailVerification\ZendDb();
                     $obj->setDbAdapter($sm->get('zfcuser_zend_db_adapter'));
                     $obj->setEntityPrototype(new Entity\EmailVerification());
                     $obj->setHydrator(new  Mapper\EmailVerificationHydrator());
+                    return $obj;
+                },
+                'cdlitwostagesignup_ev_modelmapper_doctrineorm' => function($sm) {
+                    // Add Entity driver
+                    $chain = $sm->get('doctrine.driver.orm_default');
+                    $chain->addDriver(new XmlDriver(__DIR__ . '/config/xml/cdlitwostagesignup-doctrineorm'), 'CdliTwoStageSignup\Entity');
+
+                    // Create instance of Doctrine ORM mapper
+                    $obj = new Mapper\EmailVerification\DoctrineORM(
+                        $sm->get('zfcuser_doctrine_em'),
+                        $sm->get('cdlitwostagesignup_module_options')
+                    );
                     return $obj;
                 },
                 'cdlitwostagesignup_ev_tablegateway' => function($sm) {
@@ -64,8 +77,8 @@ class Module implements
                 },
                 'cdlitwostagesignup_ev_service' => function($sm) {
                     $obj = new Service\EmailVerification();
+                    $obj->setServiceLocator($sm);
                     $obj->setEmailVerificationMapper($sm->get('cdlitwostagesignup_ev_modelmapper'));
-                    $obj->setEmailVerificationForm($sm->get('cdlitwostagesignup_ev_form'));
                     $obj->setMessageRenderer($sm->get('Zend\View\Renderer\PhpRenderer'));
                     $obj->setMessageTransport($sm->get('Zend\Mail\Transport\Sendmail'));
                     $obj->setEmailMessageOptions($sm->get('cdlitwostagesignup_module_options'));

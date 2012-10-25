@@ -1,7 +1,7 @@
 {
     "name": "cdli/CdliTwoStageSignup",
     "description": "Two-stage signup process for ZfcUser",
-    "version": "0.4.0",
+    "version": "0.8.0",
     "type": "library",
     "license": "BSD-3-Clause",
     "keywords": [
@@ -18,6 +18,10 @@
     "require": {
         "zendframework/zendframework": "dev-master",
         "zf-commons/zfc-user": "dev-master"
+    },
+    "suggest": {
+        "zf-commons/zfc-user-doctrine-orm": "dev-master",
+        "doctrine/doctrine-orm-module": "dev-master"
     },
     "autoload": {
         "psr-0": {
