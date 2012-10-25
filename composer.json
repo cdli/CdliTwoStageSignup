@@ -19,6 +19,10 @@
         "zendframework/zendframework": "dev-master",
         "zf-commons/zfc-user": "dev-master"
     },
+    "suggest": {
+        "zf-commons/zfc-user-doctrine-orm": "dev-master",
+        "doctrine/doctrine-orm-module": "dev-master"
+    },
     "autoload": {
         "psr-0": {
             "CdliTwoStageSignup": "src/"
