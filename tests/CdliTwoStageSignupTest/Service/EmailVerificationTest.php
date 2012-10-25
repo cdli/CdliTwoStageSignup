@@ -23,7 +23,7 @@ class EmailVerificationTest extends TestCase
 
     public function testFindByRequestKey()
     {
-        $evrMapper = $this->getMock('CdliTwoStageSignup\Mapper\EmailVerification');
+        $evrMapper = $this->getMock('CdliTwoStageSignup\Mapper\EmailVerification\MapperInterface');
         $evrMapper->expects($this->once())
                   ->method('findByRequestKey')
                   ->with($this->equalTo('DCE2D890895CF02'))
@@ -37,7 +37,7 @@ class EmailVerificationTest extends TestCase
 
     public function testFindByEmail()
     {
-        $evrMapper = $this->getMock('CdliTwoStageSignup\Mapper\EmailVerification');
+        $evrMapper = $this->getMock('CdliTwoStageSignup\Mapper\EmailVerification\MapperInterface');
         $evrMapper->expects($this->once())
                   ->method('findByEmail')
                   ->with($this->equalTo('foo@bar.com'))
@@ -51,7 +51,7 @@ class EmailVerificationTest extends TestCase
 
     public function testCleanExpiredVerificationRequests()
     {
-        $evrMapper = $this->getMock('CdliTwoStageSignup\Mapper\EmailVerification');
+        $evrMapper = $this->getMock('CdliTwoStageSignup\Mapper\EmailVerification\MapperInterface');
         $evrMapper->expects($this->once())
                   ->method('cleanExpiredVerificationRequests')
                   ->with($this->anything())
@@ -64,7 +64,7 @@ class EmailVerificationTest extends TestCase
 
     public function testRemove()
     {
-        $evrMapper = $this->getMock('CdliTwoStageSignup\Mapper\EmailVerification');
+        $evrMapper = $this->getMock('CdliTwoStageSignup\Mapper\EmailVerification\MapperInterface');
         $evrMapper->expects($this->once())
                   ->method('remove')
                   ->with($this->model)
@@ -88,7 +88,7 @@ class EmailVerificationTest extends TestCase
              ->method('isValid')
              ->will($this->returnValue(true));
 
-        $evrMapper = $this->getMock('CdliTwoStageSignup\Mapper\EmailVerification');
+        $evrMapper = $this->getMock('CdliTwoStageSignup\Mapper\EmailVerification\MapperInterface');
         $evrMapper->expects($this->once())
                   ->method('insert')
                   ->with($this->isInstanceOf('CdliTwoStageSignup\Entity\EmailVerification'))
