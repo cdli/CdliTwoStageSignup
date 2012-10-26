@@ -1,5 +1,5 @@
 {
-    "name": "cdli/CdliTwoStageSignup",
+    "name": "cdli/two-stage-signup",
     "description": "Two-stage signup process for ZfcUser",
     "version": "0.8.0",
     "type": "library",
@@ -22,6 +22,9 @@
     "suggest": {
         "zf-commons/zfc-user-doctrine-orm": "dev-master",
         "doctrine/doctrine-orm-module": "dev-master"
+    },
+    "replace": {
+        "cdli/CdliTwoStageSignup": "self.version"
     },
     "autoload": {
         "psr-0": {
