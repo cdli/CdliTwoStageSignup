@@ -56,4 +56,19 @@ return array(
             ),
         ),
     ),
+    
+    'doctrine' => array(
+        'driver' => array(
+            'cdlitwostagesignup_entity' => array(
+                'class' => 'Doctrine\ORM\Mapping\Driver\XmlDriver',
+                'paths' => __DIR__ . '/xml/cdlitwostagesignup-doctrineorm'
+            ),
+
+            'orm_default' => array(
+                'drivers' => array(
+                    'CdliTwoStageSignup\Entity'  => 'cdlitwostagesignup_entity'
+                )
+            )
+        )
+    ),
 );
