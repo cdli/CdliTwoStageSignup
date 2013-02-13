@@ -17,7 +17,7 @@
     ],
     "require": {
         "zendframework/zendframework": "2.*",
-        "zf-commons/zfc-user": "dev-master"
+        "zf-commons/zfc-user": "0.*"
     },
     "suggest": {
         "zf-commons/zfc-user-doctrine-orm": "dev-master",
