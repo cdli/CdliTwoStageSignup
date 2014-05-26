@@ -15,7 +15,7 @@ class AssertNoValidationInProgress extends AbstractValidator
     /**
      * @var array Message templates
      */
-    protected $_messageTemplates = array(
+    protected $messageTemplates = array(
         self::ERROR_RECORD_FOUND    => "This email address already has a validation in progress",
     );
 
