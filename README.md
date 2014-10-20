@@ -4,6 +4,8 @@ Version 1.0.0 Created by the Centre for Distance Learning and Innovation (www.cd
 
 [![Build Status](https://secure.travis-ci.org/cdli/CdliTwoStageSignup.png?branch=master)](http://travis-ci.org/cdli/CdliTwoStageSignup)
 
+**NOTE**: This module is very old (and unmaintained) and so may no longer be fit for purpose.  I suggest checking out [HtUserRegistration](https://github.com/hrevert/HtUserRegistration) instead. 
+
 Introduction
 ------------
 
